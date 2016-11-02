@@ -3,9 +3,7 @@ package org.usfirst.frc.team88.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-
-import org.usfirst.frc.team88.robot.commands.ExampleCommand;
-import org.usfirst.frc.team88.robot.commands.PlaySound;
+import org.usfirst.frc.team88.robot.commands.PutBoolean;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -30,9 +28,17 @@ public class OI {
 	private Button driverButtonRightAxisPress = new JoystickButton(driverController, 10);
 
 	public OI() {
-		driverButtonA.whenPressed(new PlaySound("horn"));
-		driverButtonB.whenPressed(new PlaySound("shovel"));
-		driverButtonX.whenPressed(new PlaySound("game_over"));
+		driverButtonA.whenPressed(new PutBoolean("driverButtonA", true));
+		driverButtonA.whenReleased(new PutBoolean("driverButtonA", false));
+
+		driverButtonB.whenPressed(new PutBoolean("driverButtonB", true));
+		driverButtonB.whenReleased(new PutBoolean("driverButtonB", false));
+
+		driverButtonX.whenPressed(new PutBoolean("driverButtonX", true));
+		driverButtonX.whenReleased(new PutBoolean("driverButtonX", false));
+
+		driverButtonY.whenPressed(new PutBoolean("driverButtonY", true));
+		driverButtonY.whenReleased(new PutBoolean("driverButtonY", false));
 	}
 	
 	

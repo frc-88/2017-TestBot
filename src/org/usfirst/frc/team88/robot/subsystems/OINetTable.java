@@ -1,16 +1,19 @@
-
 package org.usfirst.frc.team88.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 /**
  *
  */
-public class ExampleSubsystem extends Subsystem {
+public class OINetTable extends Subsystem {
     
-    // Put methods for controlling this subsystem
-    // here. Call these from Commands.
+	public NetworkTable table;
 
+	public OINetTable() {
+		table = NetworkTable.getTable("oitable");
+	}
+	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
