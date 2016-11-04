@@ -7,11 +7,9 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class DriveWithController extends Command {
-	private double left;
-	private double right;
-	
-    public DriveWithController() {
+public class DriveArcade extends Command {
+
+    public DriveArcade() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     	requires(Robot.drive);
@@ -23,14 +21,7 @@ public class DriveWithController extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	left = Robot.oi.getDriverLeftVerticalAxis();
-    	right = Robot.oi.getDriverRightVerticalAxis();
-    	
-    	left = Robot.oi.applyDeadZone(left);
-    	right = Robot.oi.applyDeadZone(right);
-    	
-    	Robot.drive.set(-left, right);
-    	
+    	Robot.drive.arcadeDrive();
     }
 
     // Make this return true when this Command no longer needs to run execute()
