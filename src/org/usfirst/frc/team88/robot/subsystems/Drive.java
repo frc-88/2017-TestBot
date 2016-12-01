@@ -36,17 +36,25 @@ public class Drive extends Subsystem {
 	}
 
 	public void tankDrive(double left, double right)  {
-		robotDrive.tankDrive(left, right);
+		robotDrive.tankDrive(left, -right);
 	}
 	
 	public void arcadeDrive() {
 		robotDrive.arcadeDrive(Robot.oi.driverController);
 	}
 	
+	public double getLeftCurrent(){
+		return lTalon.getOutputCurrent();
+	}
+	
+	public double getRightCurrent(){
+		return rTalon.getOutputCurrent();
+	}
+	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-        // setDefaultCommand(new DriveTank());
-        setDefaultCommand(new DriveArcade());
+        setDefaultCommand(new DriveTank());
+        // setDefaultCommand(new DriveArcade());
     }
 }
 

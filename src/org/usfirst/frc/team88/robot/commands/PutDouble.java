@@ -7,39 +7,32 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class DriveTank extends Command {
-	private double left;
-	private double right;
+public class PutDouble extends Command {
+
+	private String key;
+	private double value;
 	
-    public DriveTank() {
+    public PutDouble(String name, double toggle) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-    	requires(Robot.drive);
     	requires(Robot.oiNetTable);
+
+    	key = name;
+    	value = toggle;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	Robot.oiNetTable.table.putDouble(key, value);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	left = Robot.oi.getDriverLeftVerticalAxis();
-    	right = Robot.oi.getDriverRightVerticalAxis();
-    	
-    	left = Robot.oi.applyDeadZone(left);
-    	right = Robot.oi.applyDeadZone(right);
-    	
-    	Robot.oiNetTable.table.putDouble("Right Current", Robot.drive.getRightCurrent());
-    	Robot.oiNetTable.table.putDouble("Left Current", Robot.drive.getLeftCurrent());
-    	
-    	Robot.drive.tankDrive(-left, right);
-    	
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return true;
     }
 
     // Called once after isFinished returns true
