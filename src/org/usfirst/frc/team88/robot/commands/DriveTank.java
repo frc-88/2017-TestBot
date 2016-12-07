@@ -17,7 +17,7 @@ public class DriveTank extends Command {
 	private static final int DRIVING = 1;
 	private static final int PREP = 2;
 	private static final int SHIFT = 3;
-	private static final double SHIFTSPEED = 7.0;
+	private static final double SHIFTSPEED = 100.0;
 	
     public DriveTank() {
         // Use requires() here to declare subsystem dependencies
@@ -48,26 +48,33 @@ public class DriveTank extends Command {
         	Robot.oiNetTable.table.putDouble("Right Current", Robot.drive.getRightCurrent());
         	Robot.oiNetTable.table.putDouble("Left Current", Robot.drive.getLeftCurrent());
         	
+        	Robot.drive.smartDashboard();
+        	
         	speed = Robot.drive.getAvgSpeed();
-        	Robot.drive.tankDrive(left, right);
+//        	Robot.drive.tankDrive(left, right);
+        	Robot.drive.closedLoopDrive(left, right);
+        	Robot.drive.setClosedLoopSpeed();
         	lastShift++;
         
         	//Comment out in order to use open loop and set the state to permanent drive
-//        	if((lastShift > 200) && 
-//        			((speed > SHIFTSPEED && lowGear)||
-//        			(speed < SHIFTSPEED && !lowGear))){
-//        		state = PREP;
-//        	}
+        	if((lastShift > 200) && 
+        			((speed > SHIFTSPEED && lowGear)||
+        			(speed < SHIFTSPEED && !lowGear))){
+        		state = PREP;
+        	}
     		break;
+    		
     	case PREP:
     		left = Robot.drive.getLeftSpeed();
     		right = Robot.drive.getRightSpeed();
-    		Robot.drive.tankDrive(left, right);
     		
+    		//Robot.drive.tankDrive(left, right);
+    		Robot.drive.closedLoopDrive(left, right);
     		state = SHIFT;
     		break;
-    	case SHIFT:
     		
+    	case SHIFT:
+    		Robot.drive.shift();
     		lastShift = 0;
     		break;
     	}

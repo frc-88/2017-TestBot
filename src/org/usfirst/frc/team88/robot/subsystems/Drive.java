@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -23,20 +24,52 @@ public class Drive extends Subsystem {
 	private final CANTalon lTalon, lTalonSlave, lTalonSlave2, rTalon, rTalonSlave, rTalonSlave2;
 	private final RobotDrive robotDrive;
 	private DoubleSolenoid shifter;
+	
+	private final double FAST_SPEED = 400.0;
+	private final double SLOW_SPEED = 200.0;
+	
+	private final static int SPEED_PROFILE = 0;
+	private final static double SPEED_RAMPRATE = 6.0;
+	private final static double SPEED_P = 0.5;
+	private final static double SPEED_I = 0.002;
+	private final static double SPEED_D = 1.0;
+	private final static double SPEED_F = 0.5;
+	private final static int SPEED_IZONE = 0;
+	
+	private final static int POSITION_PROFILE = 1;
+	private final static double POSITION_RAMPRATE = 0.1;
+	private final static double POSITION_P = 0.8;
+	private final static double POSITION_I = 0.0;
+	private final static double POSITION_D = 0.0;
+	private final static double POSITION_F = 0.0;
+	private final static int POSITION_IZONE = 0;
+	
+	private double maxSpeed;
+	private CANTalon.TalonControlMode controlMode;
 
 	public Drive() {
 		lTalon = new CANTalon(RobotMap.driveLeft);
+		lTalon.setPID(SPEED_P, SPEED_I, SPEED_D, SPEED_F, SPEED_IZONE, SPEED_RAMPRATE, SPEED_PROFILE);
+		lTalon.setPID(POSITION_P, POSITION_I, POSITION_D, POSITION_F, POSITION_IZONE, POSITION_RAMPRATE, POSITION_PROFILE);
+		lTalon.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+		
 		lTalonSlave = new CANTalon(RobotMap.driveLeftSlave);
 		lTalonSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
 		lTalonSlave.set(lTalon.getDeviceID());
+		
 		lTalonSlave2 = new CANTalon(RobotMap.driveLeftSlave2);
 		lTalonSlave2.changeControlMode(CANTalon.TalonControlMode.Follower);
 		lTalonSlave2.set(lTalon.getDeviceID());
 		
 		rTalon = new CANTalon(RobotMap.driveRight);
+		rTalon.setPID(SPEED_P, SPEED_I, SPEED_D, SPEED_F, SPEED_IZONE, SPEED_RAMPRATE, SPEED_PROFILE);
+		rTalon.setPID(POSITION_P, POSITION_I, POSITION_D, POSITION_F, POSITION_IZONE, POSITION_RAMPRATE, POSITION_PROFILE);
+		rTalon.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+		
 		rTalonSlave = new CANTalon(RobotMap.driveRightSlave);
 		rTalonSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
 		rTalonSlave.set(rTalon.getDeviceID());
+		
 		rTalonSlave2 = new CANTalon(RobotMap.driveRightSlave2);
 		rTalonSlave2.changeControlMode(CANTalon.TalonControlMode.Follower);
 		rTalonSlave2.set(rTalon.getDeviceID());
@@ -44,11 +77,74 @@ public class Drive extends Subsystem {
 		shifter = new DoubleSolenoid(RobotMap.shifterSolenoidLow, RobotMap.shifterSolenoidHigh);
 		shifter.set(Value.kForward);
 		
+		maxSpeed = SLOW_SPEED;
+		
 		robotDrive = new RobotDrive(lTalon, rTalon);
 	}
 
 	public void tankDrive(double left, double right)  {
 		robotDrive.tankDrive(left, right);
+	}
+	
+	public void shift(){
+		if(shifter.isFwdSolenoidBlackListed()){
+			shifter.set(Value.kReverse);
+		}
+		else{
+			shifter.set(Value.kForward);
+		}
+	}
+	
+	public void closedLoopDrive(double left, double right){
+		
+		switch(controlMode){
+		case Disabled:
+		case Position:
+			lTalon.set(left);
+			rTalon.set(right);
+			break;
+		case Speed:
+			lTalon.set(left * maxSpeed);
+			rTalon.set(right * maxSpeed);
+			break;
+		default:
+			break;
+			
+		}
+	}
+	
+	public void setClosedLoopSpeed(){
+		controlMode = CANTalon.TalonControlMode.Speed;
+		
+		lTalon.setProfile(SPEED_PROFILE);
+		rTalon.setProfile(SPEED_PROFILE);
+		
+		lTalon.changeControlMode(controlMode);
+		rTalon.changeControlMode(controlMode);
+	}
+	
+	public void setClosedLoopPosition(){
+		controlMode = CANTalon.TalonControlMode.Position;
+		
+		lTalon.setProfile(POSITION_PROFILE);
+		rTalon.setProfile(POSITION_PROFILE);
+		
+		lTalon.changeControlMode(controlMode);
+		rTalon.changeControlMode(controlMode);
+	}
+	
+	public void toggleMaxSpeed(){
+		if(maxSpeed == FAST_SPEED){
+			maxSpeed = SLOW_SPEED;
+		}
+		else{
+			maxSpeed = SLOW_SPEED;
+		}
+	}
+	
+	public void resetEncoders(){
+		lTalon.setPosition(0);
+		rTalon.setPosition(0);
 	}
 	
 	public void arcadeDrive() {
@@ -74,6 +170,14 @@ public class Drive extends Subsystem {
 	public double getAvgSpeed(){
 		double speed = (rTalon.getSpeed() + lTalon.getSpeed()) / 2;
 		return speed;
+	}
+	
+	public void smartDashboard(){
+		SmartDashboard.putNumber("LeftEncoder: ", lTalon.getPosition());
+		SmartDashboard.putNumber("LeftSpeed: ", lTalon.getSpeed());
+
+		SmartDashboard.putNumber("RightEncoder: ", rTalon.getPosition());
+		SmartDashboard.putNumber("RightSpeed: ", rTalon.getSpeed());
 	}
 	
     public void initDefaultCommand() {
