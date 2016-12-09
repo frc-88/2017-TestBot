@@ -11,13 +11,12 @@ public class DriveTank extends Command {
 	private double left;
 	private double right;
 	private int state;
-	private boolean lowGear;
 	private int lastShift;
 	private double speed;
 	private static final int DRIVING = 1;
 	private static final int PREP = 2;
 	private static final int SHIFT = 3;
-	private static final double SHIFTSPEED = 100.0;
+	private static final double SHIFTSPEED = 550.0;
 	
     public DriveTank() {
         // Use requires() here to declare subsystem dependencies
@@ -30,8 +29,8 @@ public class DriveTank extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	Robot.drive.setClosedLoopSpeed();
+//    	Robot.drive.setOpenLoop();
     	state = DRIVING;
-    	lowGear = true;
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -49,17 +48,18 @@ public class DriveTank extends Command {
         	Robot.oiNetTable.table.putDouble("Right Current", Robot.drive.getRightCurrent());
         	Robot.oiNetTable.table.putDouble("Left Current", Robot.drive.getLeftCurrent());
         	
-        	Robot.drive.smartDashboard();
+        	Robot.drive.smartDashboard(state);
         	
         	speed = Robot.drive.getAvgSpeed();
+        	
 //        	Robot.drive.tankDrive(left, right);
         	Robot.drive.closedLoopDrive(left, right);
         	lastShift++;
         
         	//Comment out in order to use open loop and set the state to permanent drive
         	if((lastShift > 200) && 
-        			((speed > SHIFTSPEED && lowGear)||
-        			(speed < SHIFTSPEED && !lowGear))){
+        			((speed > SHIFTSPEED && Robot.drive.isLowGear() == true)||
+        			(speed < SHIFTSPEED && Robot.drive.isLowGear() == false))){
         		state = PREP;
         	}
     		break;
@@ -68,15 +68,20 @@ public class DriveTank extends Command {
     		left = Robot.drive.getLeftSpeed();
     		right = Robot.drive.getRightSpeed();
     		
+        	Robot.drive.smartDashboard(state);
+
     		//Robot.drive.tankDrive(left, right);
     		Robot.drive.closedLoopDrive(left, right);
     		state = SHIFT;
     		break;
     		
     	case SHIFT:
+        	Robot.drive.smartDashboard(state);
+
     		Robot.drive.shift();
     		lastShift = 0;
-        	Robot.oiNetTable.table.putBoolean("Has Shifted", lowGear);
+        	Robot.oiNetTable.table.putBoolean("Has Shifted", Robot.drive.isLowGear());
+        	state = DRIVING;
     		break;
     	}
     }

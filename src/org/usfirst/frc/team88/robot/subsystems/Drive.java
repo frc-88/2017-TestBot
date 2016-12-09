@@ -25,8 +25,8 @@ public class Drive extends Subsystem {
 	private final RobotDrive robotDrive;
 	private DoubleSolenoid shifter;
 	
-	private final double FAST_SPEED = 400.0;
-	private final double SLOW_SPEED = 200.0;
+	private final double FAST_SPEED = 1700;
+	private final double SLOW_SPEED = 700;
 	
 	public final static double ENC_CYCLES_PER_REV = 360.0;
 	public final static double GEAR_RATIO = (3 * 34) / 50;
@@ -34,10 +34,10 @@ public class Drive extends Subsystem {
 	
 	private final static int SPEED_PROFILE = 0;
 	private final static double SPEED_RAMPRATE = 1;
-	private final static double SPEED_P = 0;
+	private final static double SPEED_P = 0.136;
 	private final static double SPEED_I = 0;
 	private final static double SPEED_D = 0;
-	private final static double SPEED_F = 1;
+	private final static double SPEED_F = 0.622;
 	private final static int SPEED_IZONE = 0;
 	
 	private final static int POSITION_PROFILE = 1;
@@ -57,6 +57,10 @@ public class Drive extends Subsystem {
 		lTalon.setPID(POSITION_P, POSITION_I, POSITION_D, POSITION_F, POSITION_IZONE, POSITION_RAMPRATE, POSITION_PROFILE);
 		lTalon.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
 		lTalon.configEncoderCodesPerRev(360);
+		lTalon.configNominalOutputVoltage(+0.0f, -0.0f);
+		lTalon.configPeakOutputVoltage(+12.0f, -12.0f);
+		lTalon.reverseSensor(true);
+		lTalon.enableBrakeMode(false);
 		
 		lTalonSlave = new CANTalon(RobotMap.driveLeftSlave);
 		lTalonSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
@@ -71,6 +75,10 @@ public class Drive extends Subsystem {
 		rTalon.setPID(POSITION_P, POSITION_I, POSITION_D, POSITION_F, POSITION_IZONE, POSITION_RAMPRATE, POSITION_PROFILE);
 		rTalon.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
 		rTalon.configEncoderCodesPerRev(360);
+		rTalon.configNominalOutputVoltage(+0.0f, -0.0f);
+		rTalon.configPeakOutputVoltage(+12.0f, -12.0f);
+		rTalon.reverseSensor(true);
+		rTalon.enableBrakeMode(false);
 		
 		rTalonSlave = new CANTalon(RobotMap.driveRightSlave);
 		rTalonSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
@@ -93,7 +101,7 @@ public class Drive extends Subsystem {
 	}
 	
 	public void shift(){
-		if(shifter.isFwdSolenoidBlackListed()){
+		if(shifter.get() == Value.kForward){
 			shifter.set(Value.kReverse);
 		}
 		else{
@@ -101,10 +109,19 @@ public class Drive extends Subsystem {
 		}
 	}
 	
+	public boolean isLowGear(){
+		if(shifter.get() == Value.kForward){
+			return true;
+		}
+		else 
+			return false;
+	}
+	
 	public void closedLoopDrive(double left, double right){
 		
 		switch(controlMode){
 		case Disabled:
+		case PercentVbus:
 		case Position:
 			lTalon.set(left);
 			rTalon.set(right);
@@ -119,6 +136,13 @@ public class Drive extends Subsystem {
 			break;
 			
 		}
+	}
+	
+	public void setOpenLoop(){
+		controlMode = CANTalon.TalonControlMode.PercentVbus;
+		
+		lTalon.changeControlMode(controlMode);
+		rTalon.changeControlMode(controlMode);
 	}
 	
 	public void setClosedLoopSpeed(){
@@ -176,17 +200,22 @@ public class Drive extends Subsystem {
 	}
 	
 	public double getAvgSpeed(){
-		double speed = ((rTalon.getEncVelocity() / ENC_CYCLES_PER_REV * 10.0) * GEAR_RATIO	* WHEEL_DIAMETER * Math.PI / 12	+ 
-						(lTalon.getEncVelocity() / ENC_CYCLES_PER_REV * 10.0) * GEAR_RATIO	* WHEEL_DIAMETER * Math.PI / 12) / 2;
+		double speed = (lTalon.getSpeed() + rTalon.getSpeed()) / 2;
+		
 		return speed;
 	}
 	
-	public void smartDashboard(){
+	public void smartDashboard(int state){
 		SmartDashboard.putNumber("LeftEncoder: ", lTalon.getPosition());
 		SmartDashboard.putNumber("LeftSpeed: ", lTalon.getSpeed());
 
 		SmartDashboard.putNumber("RightEncoder: ", rTalon.getPosition());
 		SmartDashboard.putNumber("RightSpeed: ", rTalon.getSpeed());
+		
+		SmartDashboard.putNumber("LeftError: ", lTalon.getClosedLoopError());
+		SmartDashboard.putNumber("RightError: ", rTalon.getClosedLoopError());
+		
+		SmartDashboard.putNumber("ShifterState: ", state);
 	}
 	
     public void initDefaultCommand() {
