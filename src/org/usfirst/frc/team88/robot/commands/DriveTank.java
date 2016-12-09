@@ -24,13 +24,14 @@ public class DriveTank extends Command {
         // eg. requires(chassis);
     	requires(Robot.drive);
     	requires(Robot.oiNetTable);
-    	state = DRIVING;
-    	lowGear = true;
     	
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	Robot.drive.setClosedLoopSpeed();
+    	state = DRIVING;
+    	lowGear = true;
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -53,7 +54,6 @@ public class DriveTank extends Command {
         	speed = Robot.drive.getAvgSpeed();
 //        	Robot.drive.tankDrive(left, right);
         	Robot.drive.closedLoopDrive(left, right);
-        	Robot.drive.setClosedLoopSpeed();
         	lastShift++;
         
         	//Comment out in order to use open loop and set the state to permanent drive
@@ -76,6 +76,7 @@ public class DriveTank extends Command {
     	case SHIFT:
     		Robot.drive.shift();
     		lastShift = 0;
+        	Robot.oiNetTable.table.putBoolean("Has Shifted", lowGear);
     		break;
     	}
     }

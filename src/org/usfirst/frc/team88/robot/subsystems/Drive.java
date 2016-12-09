@@ -28,12 +28,16 @@ public class Drive extends Subsystem {
 	private final double FAST_SPEED = 400.0;
 	private final double SLOW_SPEED = 200.0;
 	
+	public final static double ENC_CYCLES_PER_REV = 360.0;
+	public final static double GEAR_RATIO = (3 * 34) / 50;
+	public final static double WHEEL_DIAMETER = 4;
+	
 	private final static int SPEED_PROFILE = 0;
-	private final static double SPEED_RAMPRATE = 6.0;
-	private final static double SPEED_P = 0.5;
-	private final static double SPEED_I = 0.002;
-	private final static double SPEED_D = 1.0;
-	private final static double SPEED_F = 0.5;
+	private final static double SPEED_RAMPRATE = 1;
+	private final static double SPEED_P = 0;
+	private final static double SPEED_I = 0;
+	private final static double SPEED_D = 0;
+	private final static double SPEED_F = 1;
 	private final static int SPEED_IZONE = 0;
 	
 	private final static int POSITION_PROFILE = 1;
@@ -52,6 +56,7 @@ public class Drive extends Subsystem {
 		lTalon.setPID(SPEED_P, SPEED_I, SPEED_D, SPEED_F, SPEED_IZONE, SPEED_RAMPRATE, SPEED_PROFILE);
 		lTalon.setPID(POSITION_P, POSITION_I, POSITION_D, POSITION_F, POSITION_IZONE, POSITION_RAMPRATE, POSITION_PROFILE);
 		lTalon.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+		lTalon.configEncoderCodesPerRev(360);
 		
 		lTalonSlave = new CANTalon(RobotMap.driveLeftSlave);
 		lTalonSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
@@ -65,6 +70,7 @@ public class Drive extends Subsystem {
 		rTalon.setPID(SPEED_P, SPEED_I, SPEED_D, SPEED_F, SPEED_IZONE, SPEED_RAMPRATE, SPEED_PROFILE);
 		rTalon.setPID(POSITION_P, POSITION_I, POSITION_D, POSITION_F, POSITION_IZONE, POSITION_RAMPRATE, POSITION_PROFILE);
 		rTalon.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+		rTalon.configEncoderCodesPerRev(360);
 		
 		rTalonSlave = new CANTalon(RobotMap.driveRightSlave);
 		rTalonSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
@@ -106,6 +112,8 @@ public class Drive extends Subsystem {
 		case Speed:
 			lTalon.set(left * maxSpeed);
 			rTalon.set(right * maxSpeed);
+			SmartDashboard.putNumber("Left Set Speed", left * maxSpeed);
+			SmartDashboard.putNumber("Right Set Speed", right * maxSpeed);
 			break;
 		default:
 			break;
@@ -168,7 +176,8 @@ public class Drive extends Subsystem {
 	}
 	
 	public double getAvgSpeed(){
-		double speed = (rTalon.getSpeed() + lTalon.getSpeed()) / 2;
+		double speed = ((rTalon.getEncVelocity() / ENC_CYCLES_PER_REV * 10.0) * GEAR_RATIO	* WHEEL_DIAMETER * Math.PI / 12	+ 
+						(lTalon.getEncVelocity() / ENC_CYCLES_PER_REV * 10.0) * GEAR_RATIO	* WHEEL_DIAMETER * Math.PI / 12) / 2;
 		return speed;
 	}
 	
