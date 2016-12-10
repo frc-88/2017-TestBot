@@ -49,6 +49,9 @@ public class Drive extends Subsystem {
 	private final static int POSITION_IZONE = 0;
 	
 	private double maxSpeed;
+	private double targetMaxSpeed;
+	private double speedIncrement;
+	
 	private CANTalon.TalonControlMode controlMode;
 
 	public Drive() {
@@ -92,6 +95,7 @@ public class Drive extends Subsystem {
 		shifter.set(Value.kForward);
 		
 		maxSpeed = SLOW_SPEED;
+		targetMaxSpeed = SLOW_SPEED;
 		
 		robotDrive = new RobotDrive(lTalon, rTalon);
 	}
@@ -172,6 +176,20 @@ public class Drive extends Subsystem {
 		else{
 			maxSpeed = SLOW_SPEED;
 		}
+	}
+	
+	private double getMaxSpeed() {
+		if ( (targetMaxSpeed - maxSpeed > 1) || (targetMaxSpeed - maxSpeed < 1) ) {
+			if (speedIncrement == 0) {
+				speedIncrement = (targetMaxSpeed - maxSpeed) / 200;
+			}
+			maxSpeed += speedIncrement;
+		} else {
+			speedIncrement = 0;
+			maxSpeed = targetMaxSpeed;
+		}
+		
+		return maxSpeed;
 	}
 	
 	public void resetEncoders(){
