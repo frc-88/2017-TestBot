@@ -230,6 +230,11 @@ public class Drive extends Subsystem {
 		SmartDashboard.putNumber("RightError: ", rTalon.getClosedLoopError());
 		
 		SmartDashboard.putNumber("ShifterState: ", state);
+		
+		// for Network Tables stuff
+		SmartDashboard.putBoolean("lowGear", isLowGear());
+		SmartDashboard.putNumber("leftCurrent", lTalon.getOutputCurrent());
+		SmartDashboard.putNumber("rightCurrent", rTalon.getOutputCurrent());
 	}
 	
     public void initDefaultCommand() {
