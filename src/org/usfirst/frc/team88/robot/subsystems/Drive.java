@@ -63,7 +63,8 @@ public class Drive extends Subsystem {
 		lTalon.configEncoderCodesPerRev(360);
 		lTalon.configNominalOutputVoltage(+0.0f, -0.0f);
 		lTalon.configPeakOutputVoltage(+12.0f, -12.0f);
-		lTalon.reverseSensor(true);
+		lTalon.reverseSensor(false);
+		lTalon.reverseOutput(false);
 		lTalon.enableBrakeMode(false);
 		
 		lTalonSlave = new CANTalon(RobotMap.driveLeftSlave);
@@ -82,6 +83,7 @@ public class Drive extends Subsystem {
 		rTalon.configNominalOutputVoltage(+0.0f, -0.0f);
 		rTalon.configPeakOutputVoltage(+12.0f, -12.0f);
 		rTalon.reverseSensor(true);
+		rTalon.reverseOutput(true);
 		rTalon.enableBrakeMode(false);
 		
 		rTalonSlave = new CANTalon(RobotMap.driveRightSlave);
@@ -108,9 +110,11 @@ public class Drive extends Subsystem {
 	public void shift(){
 		if(shifter.get() == Value.kForward){
 			shifter.set(Value.kReverse);
+			maxSpeed = FAST_SPEED;
 		}
 		else{
 			shifter.set(Value.kForward);
+			maxSpeed = SLOW_SPEED;
 		}
 	}
 	

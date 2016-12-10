@@ -3,3 +3,6 @@
 /build.xml
 /.classpath
 /.project
+/build/
+/dist/
+/sysProps.xml
