@@ -110,11 +110,11 @@ public class Drive extends Subsystem {
 	public void shift(){
 		if(shifter.get() == Value.kForward){
 			shifter.set(Value.kReverse);
-			maxSpeed = FAST_SPEED;
+			targetMaxSpeed = FAST_SPEED;
 		}
 		else{
 			shifter.set(Value.kForward);
-			maxSpeed = SLOW_SPEED;
+			targetMaxSpeed = SLOW_SPEED;
 		}
 	}
 	
@@ -136,10 +136,10 @@ public class Drive extends Subsystem {
 			rTalon.set(right);
 			break;
 		case Speed:
-			lTalon.set(left * maxSpeed);
+			lTalon.set(left * getMaxSpeed());
 			rTalon.set(right * maxSpeed);
-			SmartDashboard.putNumber("Left Set Speed", left * maxSpeed);
-			SmartDashboard.putNumber("Right Set Speed", right * maxSpeed);
+			SmartDashboard.putNumber("Left Set Speed", left * getMaxSpeed());
+			SmartDashboard.putNumber("Right Set Speed", right * getMaxSpeed());
 			break;
 		default:
 			break;
@@ -172,15 +172,6 @@ public class Drive extends Subsystem {
 		
 		lTalon.changeControlMode(controlMode);
 		rTalon.changeControlMode(controlMode);
-	}
-	
-	private void toggleTargetMaxSpeed(){
-		if(targetMaxSpeed == FAST_SPEED){
-			targetMaxSpeed = SLOW_SPEED;
-		}
-		else{
-			targetMaxSpeed = SLOW_SPEED;
-		}
 	}
 	
 	private double getMaxSpeed() {
