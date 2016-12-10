@@ -27,6 +27,7 @@ public class Drive extends Subsystem {
 	
 	private final double FAST_SPEED = 1700;
 	private final double SLOW_SPEED = 700;
+	private final double DIFF_SPEED = (FAST_SPEED - SLOW_SPEED)/100 + 1;
 	
 	public final static double ENC_CYCLES_PER_REV = 360.0;
 	public final static double GEAR_RATIO = (3 * 34) / 50;
@@ -179,9 +180,9 @@ public class Drive extends Subsystem {
 	}
 	
 	private double getMaxSpeed() {
-		if ( (targetMaxSpeed - maxSpeed > 1) || (targetMaxSpeed - maxSpeed < 1) ) {
+		if ( (targetMaxSpeed - maxSpeed > DIFF_SPEED ) || (targetMaxSpeed - maxSpeed < -DIFF_SPEED) ) {
 			if (speedIncrement == 0) {
-				speedIncrement = (targetMaxSpeed - maxSpeed) / 200;
+				speedIncrement = (targetMaxSpeed - maxSpeed) / 100;
 			}
 			maxSpeed += speedIncrement;
 		} else {

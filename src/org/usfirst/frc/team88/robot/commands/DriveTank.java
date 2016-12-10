@@ -57,7 +57,7 @@ public class DriveTank extends Command {
         	lastShift++;
         
         	//Comment out in order to use open loop and set the state to permanent drive
-        	if((lastShift > 200) && 
+        	if((lastShift > 100) && 
         			((speed > SHIFTSPEED && Robot.drive.isLowGear() == true)||
         			(speed < SHIFTSPEED && Robot.drive.isLowGear() == false))){
         		state = PREP;
