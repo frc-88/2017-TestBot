@@ -137,7 +137,7 @@ public class Drive extends Subsystem {
 			break;
 		case Speed:
 			lTalon.set(left * getMaxSpeed());
-			rTalon.set(right * maxSpeed);
+			rTalon.set(right * getMaxSpeed());
 			SmartDashboard.putNumber("Left Set Speed", left * getMaxSpeed());
 			SmartDashboard.putNumber("Right Set Speed", right * getMaxSpeed());
 			break;
