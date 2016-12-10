@@ -65,13 +65,13 @@ public class DriveTank extends Command {
     		break;
     		
     	case PREP:
-    		left = Robot.drive.getLeftSpeed();
-    		right = Robot.drive.getRightSpeed();
+    		//left = Robot.drive.getLeftSpeed();
+    		//right = Robot.drive.getRightSpeed();
     		
         	Robot.drive.smartDashboard(state);
 
     		//Robot.drive.tankDrive(left, right);
-    		Robot.drive.closedLoopDrive(left, right);
+    		//Robot.drive.closedLoopDrive(left, right);
     		state = SHIFT;
     		break;
     		

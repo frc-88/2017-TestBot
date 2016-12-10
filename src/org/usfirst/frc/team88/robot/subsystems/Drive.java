@@ -230,6 +230,8 @@ public class Drive extends Subsystem {
 		SmartDashboard.putNumber("RightError: ", rTalon.getClosedLoopError());
 		
 		SmartDashboard.putNumber("ShifterState: ", state);
+		SmartDashboard.putNumber("targetMaxspeed", targetMaxSpeed);
+		SmartDashboard.putNumber("maxSpeed", getMaxSpeed());
 	}
 	
     public void initDefaultCommand() {
