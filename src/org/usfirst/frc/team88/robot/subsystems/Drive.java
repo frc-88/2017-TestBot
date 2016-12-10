@@ -169,12 +169,12 @@ public class Drive extends Subsystem {
 		rTalon.changeControlMode(controlMode);
 	}
 	
-	public void toggleMaxSpeed(){
-		if(maxSpeed == FAST_SPEED){
-			maxSpeed = SLOW_SPEED;
+	private void toggleTargetMaxSpeed(){
+		if(targetMaxSpeed == FAST_SPEED){
+			targetMaxSpeed = SLOW_SPEED;
 		}
 		else{
-			maxSpeed = SLOW_SPEED;
+			targetMaxSpeed = SLOW_SPEED;
 		}
 	}
 	
