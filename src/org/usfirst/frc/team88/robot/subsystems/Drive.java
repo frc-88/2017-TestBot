@@ -52,6 +52,7 @@ public class Drive extends Subsystem {
 	private double maxSpeed;
 	private double targetMaxSpeed;
 	private double speedIncrement;
+	private boolean autoShift;
 	
 	private CANTalon.TalonControlMode controlMode;
 
@@ -99,6 +100,8 @@ public class Drive extends Subsystem {
 		
 		maxSpeed = SLOW_SPEED;
 		targetMaxSpeed = SLOW_SPEED;
+		
+		autoShift = true;
 		
 		robotDrive = new RobotDrive(lTalon, rTalon);
 	}
@@ -217,6 +220,14 @@ public class Drive extends Subsystem {
 		double speed = (lTalon.getSpeed() + rTalon.getSpeed()) / 2;
 		
 		return speed;
+	}
+	
+	public boolean isAutoShift() {
+		return autoShift;
+	}
+	
+	public void toggleAutoShift() {
+		autoShift = !autoShift;
 	}
 	
 	public void smartDashboard(int state){
