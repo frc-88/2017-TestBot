@@ -52,6 +52,7 @@ public class Drive extends Subsystem {
 	private double maxSpeed;
 	private double targetMaxSpeed;
 	private double speedIncrement;
+	private boolean autoShift;
 	
 	private CANTalon.TalonControlMode controlMode;
 
@@ -99,6 +100,8 @@ public class Drive extends Subsystem {
 		
 		maxSpeed = SLOW_SPEED;
 		targetMaxSpeed = SLOW_SPEED;
+		
+		autoShift = true;
 		
 		robotDrive = new RobotDrive(lTalon, rTalon);
 	}
@@ -219,6 +222,14 @@ public class Drive extends Subsystem {
 		return speed;
 	}
 	
+	public boolean isAutoShift() {
+		return autoShift;
+	}
+	
+	public void toggleAutoShift() {
+		autoShift = !autoShift;
+	}
+	
 	public void smartDashboard(int state){
 		SmartDashboard.putNumber("LeftEncoder: ", lTalon.getPosition());
 		SmartDashboard.putNumber("LeftSpeed: ", lTalon.getSpeed());
@@ -230,8 +241,14 @@ public class Drive extends Subsystem {
 		SmartDashboard.putNumber("RightError: ", rTalon.getClosedLoopError());
 		
 		SmartDashboard.putNumber("ShifterState: ", state);
-		SmartDashboard.putNumber("targetMaxspeed", targetMaxSpeed);
+
+    SmartDashboard.putNumber("targetMaxspeed", targetMaxSpeed);
 		SmartDashboard.putNumber("maxSpeed", getMaxSpeed());
+
+    // for Network Tables stuff
+		SmartDashboard.putBoolean("lowGear", isLowGear());
+		SmartDashboard.putNumber("leftCurrent", lTalon.getOutputCurrent());
+		SmartDashboard.putNumber("rightCurrent", rTalon.getOutputCurrent());
 	}
 	
     public void initDefaultCommand() {

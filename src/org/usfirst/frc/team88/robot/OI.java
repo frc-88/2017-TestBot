@@ -3,6 +3,9 @@ package org.usfirst.frc.team88.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+
+import org.usfirst.frc.team88.robot.commands.DriveShift;
+import org.usfirst.frc.team88.robot.commands.DriveToggleAutoShift;
 import org.usfirst.frc.team88.robot.commands.PutBoolean;
 import org.usfirst.frc.team88.robot.commands.PutDouble;
 
@@ -29,27 +32,8 @@ public class OI {
 	private Button driverButtonRightAxisPress = new JoystickButton(driverController, 10);
 
 	public OI() {
-//		driverButtonA.whenPressed(new PutBoolean("driverButtonA", true));
-//		driverButtonA.whenReleased(new PutBoolean("driverButtonA", false));
-//
-//		driverButtonB.whenPressed(new PutBoolean("driverButtonB", true));
-//		driverButtonB.whenReleased(new PutBoolean("driverButtonB", false));
-//
-//		driverButtonX.whenPressed(new PutBoolean("driverButtonX", true));
-//		driverButtonX.whenReleased(new PutBoolean("driverButtonX", false));
-//
-//		driverButtonY.whenPressed(new PutBoolean("driverButtonY", true));
-//		driverButtonY.whenReleased(new PutBoolean("driverButtonY", false));
-		
-		
-		driverButtonA.whenPressed(new PutDouble("x", 20.5));
-		driverButtonA.whenReleased(new PutDouble("x", 0.0));
-		
-		driverButtonB.whenPressed(new PutDouble("y", 30.5));
-		driverButtonB.whenReleased(new PutDouble("y", 0.0));
-
-		driverButtonX.whenPressed(new PutDouble("z", 40.5));
-		driverButtonX.whenReleased(new PutDouble("z", 0.0));
+		driverButtonA.whenPressed(new DriveToggleAutoShift());
+		driverButtonB.whenPressed(new DriveShift());
 	}
 	
 	
