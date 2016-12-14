@@ -49,7 +49,7 @@ public class DriveTank extends Command {
         	
         	Robot.drive.smartDashboard(state);
         	
-        	speed = Robot.drive.getAvgSpeed();
+        	speed = Math.abs(Robot.drive.getAvgSpeed());
         	
         	Robot.drive.closedLoopDrive(left, right);
         	lastShift++;
