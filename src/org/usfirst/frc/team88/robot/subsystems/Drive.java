@@ -34,7 +34,7 @@ public class Drive extends Subsystem {
 	public final static double WHEEL_DIAMETER = 4;
 	
 	private final static int SPEED_PROFILE = 0;
-	private final static double SPEED_RAMPRATE = 1;
+	private final static double SPEED_RAMPRATE = 2;
 	private final static double SPEED_P = 0.136;
 	private final static double SPEED_I = 0;
 	private final static double SPEED_D = 0;
@@ -42,7 +42,7 @@ public class Drive extends Subsystem {
 	private final static int SPEED_IZONE = 0;
 	
 	private final static int POSITION_PROFILE = 1;
-	private final static double POSITION_RAMPRATE = 0.1;
+	private final static double POSITION_RAMPRATE = 2;
 	private final static double POSITION_P = 0.8;
 	private final static double POSITION_I = 0.0;
 	private final static double POSITION_D = 0.0;
@@ -242,7 +242,7 @@ public class Drive extends Subsystem {
 		
 		SmartDashboard.putNumber("ShifterState: ", state);
 
-    SmartDashboard.putNumber("targetMaxspeed", targetMaxSpeed);
+		SmartDashboard.putNumber("targetMaxspeed", targetMaxSpeed);
 		SmartDashboard.putNumber("maxSpeed", getMaxSpeed());
 
     // for Network Tables stuff

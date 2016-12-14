@@ -35,7 +35,6 @@ public class DriveTank extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-
     	
     	switch (state){
     	case DRIVING:
@@ -52,26 +51,20 @@ public class DriveTank extends Command {
         	
         	speed = Robot.drive.getAvgSpeed();
         	
-//        	Robot.drive.tankDrive(left, right);
         	Robot.drive.closedLoopDrive(left, right);
         	lastShift++;
         
         	//Comment out in order to use open loop and set the state to permanent drive
-        	if((lastShift > 100) && 
+        	if(Robot.drive.isAutoShift() && (lastShift > 100) && 
         			((speed > SHIFTSPEED && Robot.drive.isLowGear() == true)||
-        			(speed < SHIFTSPEED && Robot.drive.isLowGear() == false))){
+         			 (speed < SHIFTSPEED && Robot.drive.isLowGear() == false))){
         		state = PREP;
         	}
     		break;
     		
     	case PREP:
-    		//left = Robot.drive.getLeftSpeed();
-    		//right = Robot.drive.getRightSpeed();
-    		
         	Robot.drive.smartDashboard(state);
 
-    		//Robot.drive.tankDrive(left, right);
-    		//Robot.drive.closedLoopDrive(left, right);
     		state = SHIFT;
     		break;
     		
