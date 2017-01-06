@@ -16,7 +16,7 @@ public class DriveTank extends Command {
 	private static final int DRIVING = 1;
 	private static final int PREP = 2;
 	private static final int SHIFT = 3;
-	private static final double SHIFTSPEED = 550.0;
+	private static final double SHIFTSPEED = 500.0;
 	
     public DriveTank() {
         // Use requires() here to declare subsystem dependencies
@@ -55,14 +55,15 @@ public class DriveTank extends Command {
         	lastShift++;
         
         	//Comment out in order to use open loop and set the state to permanent drive
-        	if(Robot.drive.isAutoShift() && (lastShift > 100) && 
+        	if (Robot.drive.isAutoShift() && (lastShift > (Robot.drive.isLowGear() ? 50 : 5) && 
         			((speed > SHIFTSPEED && Robot.drive.isLowGear() == true)||
-         			 (speed < SHIFTSPEED && Robot.drive.isLowGear() == false))){
-        		state = PREP;
+         			 (speed < SHIFTSPEED && Robot.drive.isLowGear() == false)))){
+        		state = SHIFT;
         	}
     		break;
     		
     	case PREP:
+    		// temp - skipping this state
         	Robot.drive.smartDashboard(state);
 
     		state = SHIFT;

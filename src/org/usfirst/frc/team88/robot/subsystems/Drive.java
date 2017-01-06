@@ -22,10 +22,10 @@ public class Drive extends Subsystem {
     // here. Call these from Commands.
 	
 	private final CANTalon lTalon, lTalonSlave, lTalonSlave2, rTalon, rTalonSlave, rTalonSlave2;
-	private final RobotDrive robotDrive;
+	// private final RobotDrive robotDrive;
 	private DoubleSolenoid shifter;
 	
-	private final double FAST_SPEED = 1700;
+	private final double FAST_SPEED = 1400;
 	private final double SLOW_SPEED = 700;
 	private final double DIFF_SPEED = (FAST_SPEED - SLOW_SPEED)/100 + 1;
 	
@@ -34,7 +34,7 @@ public class Drive extends Subsystem {
 	public final static double WHEEL_DIAMETER = 4;
 	
 	private final static int SPEED_PROFILE = 0;
-	private final static double SPEED_RAMPRATE = 2;
+	private final static double SPEED_RAMPRATE = 60;
 	private final static double SPEED_P = 0.136;
 	private final static double SPEED_I = 0;
 	private final static double SPEED_D = 0;
@@ -42,7 +42,7 @@ public class Drive extends Subsystem {
 	private final static int SPEED_IZONE = 0;
 	
 	private final static int POSITION_PROFILE = 1;
-	private final static double POSITION_RAMPRATE = 2;
+	private final static double POSITION_RAMPRATE = 60;
 	private final static double POSITION_P = 0.8;
 	private final static double POSITION_I = 0.0;
 	private final static double POSITION_D = 0.0;
@@ -67,6 +67,7 @@ public class Drive extends Subsystem {
 		lTalon.reverseSensor(false);
 		lTalon.reverseOutput(false);
 		lTalon.enableBrakeMode(false);
+		lTalon.setVoltageRampRate(SPEED_RAMPRATE);
 		
 		lTalonSlave = new CANTalon(RobotMap.driveLeftSlave);
 		lTalonSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
@@ -86,6 +87,7 @@ public class Drive extends Subsystem {
 		rTalon.reverseSensor(true);
 		rTalon.reverseOutput(true);
 		rTalon.enableBrakeMode(false);
+		rTalon.setVoltageRampRate(SPEED_RAMPRATE);
 		
 		rTalonSlave = new CANTalon(RobotMap.driveRightSlave);
 		rTalonSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
@@ -103,11 +105,11 @@ public class Drive extends Subsystem {
 		
 		autoShift = true;
 		
-		robotDrive = new RobotDrive(lTalon, rTalon);
+		//robotDrive = new RobotDrive(lTalon, rTalon);
 	}
 
 	public void tankDrive(double left, double right)  {
-		robotDrive.tankDrive(left, right);
+	//	robotDrive.tankDrive(left, right);
 	}
 	
 	public void shift(){
@@ -197,7 +199,7 @@ public class Drive extends Subsystem {
 	}
 	
 	public void arcadeDrive() {
-		robotDrive.arcadeDrive(Robot.oi.driverController);
+	//	robotDrive.arcadeDrive(Robot.oi.driverController);
 	}
 	
 	public double getLeftCurrent(){
