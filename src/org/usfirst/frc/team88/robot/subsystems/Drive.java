@@ -11,15 +11,18 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
  */
-public class Drive extends Subsystem {
+public class Drive extends Subsystem implements PIDOutput {
 
 	// Put methods for controlling this subsystem
 	// here. Call these from Commands.
@@ -28,7 +31,8 @@ public class Drive extends Subsystem {
 	// private final RobotDrive robotDrive;
 	private DoubleSolenoid shifter;
 	private AHRS navx;
-
+	public PIDController rotateController;
+	
 	private final double FAST_SPEED = 1400;
 	private final double SLOW_SPEED = 700;
 	private final double DIFF_SPEED = (FAST_SPEED - SLOW_SPEED)/100 + 1;
@@ -53,6 +57,12 @@ public class Drive extends Subsystem {
 	private final static double POSITION_F = 0.0;
 	private final static int POSITION_IZONE = 0;
 
+	private final static double ROTATE_P = 0.01;
+	private final static double ROTATE_I = 0.0002;
+	private final static double ROTATE_D = 0.0;
+	private final static double ROTATE_F = 0.0;
+	private final static double ROTATE_TOLERANCE = 4.0f;
+	
 	private double maxSpeed;
 	private double targetMaxSpeed;
 	private double speedIncrement;
@@ -111,6 +121,18 @@ public class Drive extends Subsystem {
 
 		navx = new AHRS(SerialPort.Port.kMXP);
 		//robotDrive = new RobotDrive(lTalon, rTalon);
+		
+		// set up turnController
+		rotateController = new PIDController(ROTATE_P, ROTATE_I, ROTATE_D, ROTATE_F, navx, this);
+		rotateController.setInputRange(-180.0f, 180.0f);
+		rotateController.setOutputRange(-1.0, 1.0);
+		rotateController.setAbsoluteTolerance(ROTATE_TOLERANCE);
+		rotateController.setContinuous(true);
+		
+		/* Add the PID Controller to the Test-mode dashboard, allowing manual */
+		/* tuning of the Turn Controller's P, I and D coefficients. */
+		/* Typically, only the P value needs to be modified. */
+		LiveWindow.addActuator("Drive", "RotateController", rotateController);
 	}
 
 	public void tankDrive(double left, double right)  {
@@ -272,6 +294,26 @@ public class Drive extends Subsystem {
 		// Set the default command for a subsystem here.
 		setDefaultCommand(new DriveTank());
 		// setDefaultCommand(new DriveArcade());
+	}
+
+	@Override
+	public void pidWrite(double output) {
+		double max = 0.4;
+		double min = 0.075;
+		
+		if (output > max) {
+			output = max;
+		} else if (output < min && output >0) {
+			output = min;
+		} else if (output == 0) {
+			output = 0;
+		} else if (output > (0-min)) {
+			output = 0 - min;
+		} else if (output < (0-max)) {
+			output = 0 - max;
+		}
+		
+		closedLoopDrive(-output, output);
 	}
 }
 

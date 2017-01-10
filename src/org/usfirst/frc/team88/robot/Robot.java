@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+
+import org.usfirst.frc.team88.robot.commands.DriveRotateToAngle;
 import org.usfirst.frc.team88.robot.subsystems.Drive;
 import org.usfirst.frc.team88.robot.subsystems.OINetTable;
 
@@ -36,6 +38,11 @@ public class Robot extends IterativeRobot {
 		oi = new OI();
         chooser = new SendableChooser();
         SmartDashboard.putData("Auto mode", chooser);
+        
+		SmartDashboard.putData("Angle 0", new DriveRotateToAngle(0.0));
+		SmartDashboard.putData("Angle 90", new DriveRotateToAngle(90.0));
+		SmartDashboard.putData("Angle 180", new DriveRotateToAngle(180.0));
+		SmartDashboard.putData("Angle 270", new DriveRotateToAngle(270.0));
     }
 	
 	/**
