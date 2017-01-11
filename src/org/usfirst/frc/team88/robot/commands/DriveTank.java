@@ -29,7 +29,7 @@ public class DriveTank extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	Robot.drive.setClosedLoopSpeed();
-//    	Robot.drive.setOpenLoop();
+    	//Robot.drive.setOpenLoop();
     	state = DRIVING;
     }
 
