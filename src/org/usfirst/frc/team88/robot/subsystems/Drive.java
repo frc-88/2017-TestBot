@@ -41,21 +41,21 @@ public class Drive extends Subsystem implements PIDOutput {
 	public final static double GEAR_RATIO = (3 * 34) / 50;
 	public final static double WHEEL_DIAMETER = 4;
 
-	private final static int SPEED_PROFILE = 0;
-	private final static double SPEED_RAMPRATE = 60;
-	private final static double SPEED_P = 0.136;
-	private final static double SPEED_I = 0;
-	private final static double SPEED_D = 0;
-	private final static double SPEED_F = 0.622;
-	private final static int SPEED_IZONE = 0;
+	private final static int LOW_PROFILE = 0;
+	private final static double LOW_RAMPRATE = 60;
+	private final static double LOW_P = 0;
+	private final static double LOW_I = 0;
+	private final static double LOW_D = 0;
+	private final static double LOW_F = 0.5;
+	private final static int LOW_IZONE = 0;
 
-	private final static int POSITION_PROFILE = 1;
-	private final static double POSITION_RAMPRATE = 60;
-	private final static double POSITION_P = 0.8;
-	private final static double POSITION_I = 0.0;
-	private final static double POSITION_D = 0.0;
-	private final static double POSITION_F = 0.0;
-	private final static int POSITION_IZONE = 0;
+	private final static int HIGH_PROFILE = 1;
+	private final static double HIGH_RAMPRATE = 60;
+	private final static double HIGH_P = 0.8;
+	private final static double HIGH_I = 0.0;
+	private final static double HIGH_D = 0.0;
+	private final static double HIGH_F = 0.0;
+	private final static int HIGH_IZONE = 0;
 
 	private final static double ROTATE_P = 0.01;
 	private final static double ROTATE_I = 0.0002;
@@ -67,13 +67,15 @@ public class Drive extends Subsystem implements PIDOutput {
 	private double targetMaxSpeed;
 	private double speedIncrement;
 	private boolean autoShift;
+	
+	private NetworkTable table;
 
 	private CANTalon.TalonControlMode controlMode;
 
 	public Drive() {
 		lTalon = new CANTalon(RobotMap.driveLeft);
-		lTalon.setPID(SPEED_P, SPEED_I, SPEED_D, SPEED_F, SPEED_IZONE, SPEED_RAMPRATE, SPEED_PROFILE);
-		lTalon.setPID(POSITION_P, POSITION_I, POSITION_D, POSITION_F, POSITION_IZONE, POSITION_RAMPRATE, POSITION_PROFILE);
+		lTalon.setPID(LOW_P, LOW_I, LOW_D, LOW_F, LOW_IZONE, LOW_RAMPRATE, LOW_PROFILE);
+		lTalon.setPID(HIGH_P, HIGH_I, HIGH_D, HIGH_F, HIGH_IZONE, HIGH_RAMPRATE, HIGH_PROFILE);
 		lTalon.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
 		lTalon.configEncoderCodesPerRev(360);
 		lTalon.configNominalOutputVoltage(+0.0f, -0.0f);
@@ -81,7 +83,7 @@ public class Drive extends Subsystem implements PIDOutput {
 		lTalon.reverseSensor(false);
 		lTalon.reverseOutput(false);
 		lTalon.enableBrakeMode(false);
-		lTalon.setVoltageRampRate(SPEED_RAMPRATE);
+		lTalon.setVoltageRampRate(LOW_RAMPRATE);
 
 		lTalonSlave = new CANTalon(RobotMap.driveLeftSlave);
 		lTalonSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
@@ -92,16 +94,16 @@ public class Drive extends Subsystem implements PIDOutput {
 		lTalonSlave2.set(lTalon.getDeviceID());
 
 		rTalon = new CANTalon(RobotMap.driveRight);
-		rTalon.setPID(SPEED_P, SPEED_I, SPEED_D, SPEED_F, SPEED_IZONE, SPEED_RAMPRATE, SPEED_PROFILE);
-		rTalon.setPID(POSITION_P, POSITION_I, POSITION_D, POSITION_F, POSITION_IZONE, POSITION_RAMPRATE, POSITION_PROFILE);
+		rTalon.setPID(LOW_P, LOW_I, LOW_D, LOW_F, LOW_IZONE, LOW_RAMPRATE, LOW_PROFILE);
+		rTalon.setPID(HIGH_P, HIGH_I, HIGH_D, HIGH_F, HIGH_IZONE, HIGH_RAMPRATE, HIGH_PROFILE);
 		rTalon.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
 		rTalon.configEncoderCodesPerRev(360);
 		rTalon.configNominalOutputVoltage(+0.0f, -0.0f);
 		rTalon.configPeakOutputVoltage(+12.0f, -12.0f);
 		rTalon.reverseSensor(true);
-		rTalon.reverseOutput(true);
+		rTalon.reverseOutput(false);
 		rTalon.enableBrakeMode(false);
-		rTalon.setVoltageRampRate(SPEED_RAMPRATE);
+		rTalon.setVoltageRampRate(LOW_RAMPRATE);
 
 		rTalonSlave = new CANTalon(RobotMap.driveRightSlave);
 		rTalonSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
@@ -113,11 +115,12 @@ public class Drive extends Subsystem implements PIDOutput {
 
 		shifter = new DoubleSolenoid(RobotMap.shifterSolenoidLow, RobotMap.shifterSolenoidHigh);
 		shifter.set(Value.kForward);
-
+		//shifter.set(Value.kReverse);
+		autoShift = false;
+		
 		maxSpeed = SLOW_SPEED;
 		targetMaxSpeed = SLOW_SPEED;
 
-		autoShift = true;
 
 		navx = new AHRS(SerialPort.Port.kMXP);
 		//robotDrive = new RobotDrive(lTalon, rTalon);
@@ -160,12 +163,15 @@ public class Drive extends Subsystem implements PIDOutput {
 
 	public void closedLoopDrive(double left, double right){
 
+		SmartDashboard.putNumber("Left input", left);
+		SmartDashboard.putNumber("Right input", right);
+
 		switch(controlMode){
 		case Disabled:
 		case PercentVbus:
 		case Position:
 			lTalon.set(left);
-			rTalon.set(right);
+			rTalon.set(-right);
 			break;
 		case Speed:
 			lTalon.set(left * getMaxSpeed());
@@ -189,8 +195,8 @@ public class Drive extends Subsystem implements PIDOutput {
 	public void setClosedLoopSpeed(){
 		controlMode = CANTalon.TalonControlMode.Speed;
 
-		lTalon.setProfile(SPEED_PROFILE);
-		rTalon.setProfile(SPEED_PROFILE);
+		lTalon.setProfile(LOW_PROFILE);
+		rTalon.setProfile(LOW_PROFILE);
 
 		lTalon.changeControlMode(controlMode);
 		rTalon.changeControlMode(controlMode);
@@ -199,8 +205,8 @@ public class Drive extends Subsystem implements PIDOutput {
 	public void setClosedLoopPosition(){
 		controlMode = CANTalon.TalonControlMode.Position;
 
-		lTalon.setProfile(POSITION_PROFILE);
-		rTalon.setProfile(POSITION_PROFILE);
+		lTalon.setProfile(HIGH_PROFILE);
+		rTalon.setProfile(HIGH_PROFILE);
 
 		lTalon.changeControlMode(controlMode);
 		rTalon.changeControlMode(controlMode);
@@ -262,9 +268,11 @@ public class Drive extends Subsystem implements PIDOutput {
 	public void smartDashboard(int state){
 		SmartDashboard.putNumber("LeftEncoder: ", lTalon.getPosition());
 		SmartDashboard.putNumber("LeftSpeed: ", lTalon.getSpeed());
-
+		SmartDashboard.putNumber("LeftEncVel: ", lTalon.getEncVelocity());
+		
 		SmartDashboard.putNumber("RightEncoder: ", rTalon.getPosition());
 		SmartDashboard.putNumber("RightSpeed: ", rTalon.getSpeed());
+		SmartDashboard.putNumber("RightEncVel: ", rTalon.getEncVelocity());
 
 		SmartDashboard.putNumber("LeftError: ", lTalon.getClosedLoopError());
 		SmartDashboard.putNumber("RightError: ", rTalon.getClosedLoopError());
@@ -287,7 +295,10 @@ public class Drive extends Subsystem implements PIDOutput {
 		SmartDashboard.putNumber("IMU_Roll", navx.getRoll()); 
 
 		SmartDashboard.putNumber("Displacement_X", navx.getDisplacementX()); 
-		SmartDashboard.putNumber("Displacement_Y", navx.getDisplacementY()); 
+		SmartDashboard.putNumber("Displacement_Y", navx.getDisplacementY());
+		
+		// NetworkTable stuff
+		SmartDashboard.putNumber("NT_Distance", Robot.oiNetTable.table.getNumber("Distance",0.0));
 	}
 
 	public void initDefaultCommand() {

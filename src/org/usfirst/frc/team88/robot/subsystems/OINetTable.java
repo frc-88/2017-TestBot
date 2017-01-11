@@ -11,7 +11,7 @@ public class OINetTable extends Subsystem {
 	public NetworkTable table;
 
 	public OINetTable() {
-		table = NetworkTable.getTable("oitable");
+		table = NetworkTable.getTable("imfeelinglucky");
 	}
 	
     public void initDefaultCommand() {

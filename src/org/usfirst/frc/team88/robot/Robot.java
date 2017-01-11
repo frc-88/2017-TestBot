@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 
-	public static final Drive drive = new Drive();
+	public static Drive drive;
 	public static OINetTable oiNetTable;
 	public static OI oi;
 
@@ -35,6 +35,7 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
     	oiNetTable = new OINetTable();
+    	drive = new Drive();
 		oi = new OI();
         chooser = new SendableChooser();
         SmartDashboard.putData("Auto mode", chooser);
