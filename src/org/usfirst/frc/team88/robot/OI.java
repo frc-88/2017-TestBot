@@ -6,8 +6,6 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 import org.usfirst.frc.team88.robot.commands.DriveShift;
 import org.usfirst.frc.team88.robot.commands.DriveToggleAutoShift;
-import org.usfirst.frc.team88.robot.commands.PutBoolean;
-import org.usfirst.frc.team88.robot.commands.PutDouble;
 
 /**
  * This class is the glue that binds the controls on the physical operator
