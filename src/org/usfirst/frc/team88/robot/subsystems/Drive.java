@@ -21,35 +21,29 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  */
 public class Drive extends Subsystem implements PIDOutput {
-	private final CANTalon lTalon, lTalonFollower, lTalonFollower2, rTalon, rTalonFollower, rTalonFollower2;
-	// private final RobotDrive robotDrive;
-	private DoubleSolenoid shifter;
-	private AHRS navx;
-	public PIDController rotateController;
-	
-	private final double FAST_SPEED = 1400;
-	private final double SLOW_SPEED = 700;
-	private final double DIFF_SPEED = (FAST_SPEED - SLOW_SPEED)/100 + 1;
-
 	public final static double ENC_CYCLES_PER_REV = 360.0;
 	public final static double GEAR_RATIO = (3 * 34) / 50;
 	public final static double WHEEL_DIAMETER = 4;
 
 	private final static int LOW_PROFILE = 0;
 	private final static double LOW_RAMPRATE = 60;
-	private final static double LOW_P = 0;
-	private final static double LOW_I = 0;
-	private final static double LOW_D = 0;
+	private final static double LOW_P = 0.0;
+	private final static double LOW_I = 0.0;
+	private final static double LOW_D = 0.0;
 	private final static double LOW_F = 0.5;
 	private final static int LOW_IZONE = 0;
+	private final static double LOW_MAX = 700;
 
 	private final static int HIGH_PROFILE = 1;
 	private final static double HIGH_RAMPRATE = 60;
-	private final static double HIGH_P = 0.8;
+	private final static double HIGH_P = 0.0;
 	private final static double HIGH_I = 0.0;
 	private final static double HIGH_D = 0.0;
-	private final static double HIGH_F = 0.0;
+	private final static double HIGH_F = 0.5;
 	private final static int HIGH_IZONE = 0;
+	private final static double HIGH_MAX = 1400;
+
+	private final static double DIFF_MAX = (HIGH_MAX - LOW_MAX)/100 + 1;
 
 	private final static double ROTATE_P = 0.01;
 	private final static double ROTATE_I = 0.0002;
@@ -57,11 +51,16 @@ public class Drive extends Subsystem implements PIDOutput {
 	private final static double ROTATE_F = 0.0;
 	private final static double ROTATE_TOLERANCE = 4.0f;
 	
+	public PIDController rotateController;
+	
+	private final CANTalon lTalon, lTalonFollower, lTalonFollower2, rTalon, rTalonFollower, rTalonFollower2;
+	private DoubleSolenoid shifter;
+	private AHRS navx;
+
 	private double maxSpeed;
 	private double targetMaxSpeed;
 	private double speedIncrement;
 	private boolean autoShift;
-	
 	private CANTalon.TalonControlMode controlMode;
 
 	public Drive() {
@@ -111,8 +110,8 @@ public class Drive extends Subsystem implements PIDOutput {
 		shifter = new DoubleSolenoid(RobotMap.shifterSolenoidLow, RobotMap.shifterSolenoidHigh);
 		shifter.set(Value.kForward);
 		autoShift = true;
-		maxSpeed = SLOW_SPEED;
-		targetMaxSpeed = SLOW_SPEED;
+		maxSpeed = LOW_MAX;
+		targetMaxSpeed = LOW_MAX;
 		lTalon.setProfile(LOW_PROFILE);
 		rTalon.setProfile(LOW_PROFILE);
 		
@@ -135,13 +134,13 @@ public class Drive extends Subsystem implements PIDOutput {
 	public void shift(){
 		if(shifter.get() == Value.kForward){
 			shifter.set(Value.kReverse);
-			targetMaxSpeed = FAST_SPEED;
+			targetMaxSpeed = HIGH_MAX;
 			lTalon.setProfile(HIGH_PROFILE);
 			rTalon.setProfile(HIGH_PROFILE);
 		}
 		else{
 			shifter.set(Value.kForward);
-			targetMaxSpeed = SLOW_SPEED;
+			targetMaxSpeed = LOW_MAX;
 			lTalon.setProfile(LOW_PROFILE);
 			rTalon.setProfile(LOW_PROFILE);
 		}
@@ -194,7 +193,7 @@ public class Drive extends Subsystem implements PIDOutput {
 	}
 
 	private double getMaxSpeed() {
-		if ( (targetMaxSpeed - maxSpeed > DIFF_SPEED ) || (targetMaxSpeed - maxSpeed < -DIFF_SPEED) ) {
+		if ( (targetMaxSpeed - maxSpeed > DIFF_MAX ) || (targetMaxSpeed - maxSpeed < -DIFF_MAX) ) {
 			if (speedIncrement == 0) {
 				speedIncrement = (targetMaxSpeed - maxSpeed) / 100;
 			}
