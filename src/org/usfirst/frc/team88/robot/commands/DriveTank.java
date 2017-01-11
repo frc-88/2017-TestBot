@@ -51,7 +51,7 @@ public class DriveTank extends Command {
         	
         	speed = Math.abs(Robot.drive.getAvgSpeed());
         	
-        	Robot.drive.closedLoopDrive(left, right);
+        	Robot.drive.setTarget(left, right);
         	lastShift++;
         
         	//Comment out in order to use open loop and set the state to permanent drive
