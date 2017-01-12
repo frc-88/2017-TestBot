@@ -241,6 +241,10 @@ public class Drive extends Subsystem implements PIDOutput {
 		autoShift = !autoShift;
 	}
 
+	public double getYaw() {
+		return navx.getYaw();
+	}
+	
 	public void smartDashboard(int state){
 		SmartDashboard.putNumber("LeftEncoder: ", lTalon.getPosition());
 		SmartDashboard.putNumber("LeftSpeed: ", lTalon.getSpeed());
@@ -274,7 +278,8 @@ public class Drive extends Subsystem implements PIDOutput {
 		SmartDashboard.putNumber("Displacement_Y", navx.getDisplacementY());
 		
 		// NetworkTable stuff
-		SmartDashboard.putNumber("NT_Distance", Robot.oiNetTable.table.getNumber("Distance",0.0));
+		SmartDashboard.putNumber("NT_Distance", Robot.jetsonTable.getNumber("Distance",0.0));
+		SmartDashboard.putNumber("NT_Angle", Robot.jetsonTable.getNumber("Angle",0.0));
 	}
 
 	public void initDefaultCommand() {
