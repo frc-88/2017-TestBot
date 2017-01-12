@@ -19,11 +19,7 @@ public class DriveTank extends Command {
 	private static final double SHIFTSPEED = 500.0;
 	
     public DriveTank() {
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
     	requires(Robot.drive);
-    	requires(Robot.oiNetTable);
-    	
     }
 
     // Called just before this Command runs the first time
@@ -43,9 +39,6 @@ public class DriveTank extends Command {
         	
         	left = Robot.oi.applyDeadZone(left);
         	right = Robot.oi.applyDeadZone(right);
-        	
-        	Robot.oiNetTable.table.putDouble("Right Current", Robot.drive.getRightCurrent());
-        	Robot.oiNetTable.table.putDouble("Left Current", Robot.drive.getLeftCurrent());
         	
         	Robot.drive.smartDashboard(state);
         	
@@ -74,7 +67,6 @@ public class DriveTank extends Command {
 
     		Robot.drive.shift();
     		lastShift = 0;
-        	Robot.oiNetTable.table.putBoolean("Has Shifted", Robot.drive.isLowGear());
         	state = DRIVING;
     		break;
     	}

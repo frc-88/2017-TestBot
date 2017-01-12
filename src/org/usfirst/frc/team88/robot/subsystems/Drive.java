@@ -274,7 +274,7 @@ public class Drive extends Subsystem implements PIDOutput {
 		SmartDashboard.putNumber("Displacement_Y", navx.getDisplacementY());
 		
 		// NetworkTable stuff
-		SmartDashboard.putNumber("NT_Distance", Robot.oiNetTable.table.getNumber("Distance",0.0));
+		SmartDashboard.putNumber("NT_Distance", Robot.jetsonTable.getNumber("Distance",0.0));
 	}
 
 	public void initDefaultCommand() {
