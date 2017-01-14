@@ -49,7 +49,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Rotate to 0", new DriveRotateToAngle(0.0));
 		SmartDashboard.putData("Rotate to 90", new DriveRotateToAngle(90.0));
 		SmartDashboard.putData("Rotate to 180", new DriveRotateToAngle(180.0));
-		SmartDashboard.putData("Rotate to 270", new DriveRotateToAngle(270.0));
+		SmartDashboard.putData("Rotate to -90", new DriveRotateToAngle(-90.0));
 
 		SmartDashboard.putData("Rotate to Target", new DriveRotateToTarget());
 		SmartDashboard.putData("Follow Target", new DriveFollowTarget());

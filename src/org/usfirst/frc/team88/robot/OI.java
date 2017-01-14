@@ -36,11 +36,11 @@ public class OI {
 	
 	
 	public double getDriverRightVerticalAxis() {
-		return driverController.getRawAxis(RIGHT_VERT_AXIS);
+		return -driverController.getRawAxis(RIGHT_VERT_AXIS);
 	}
 	
 	public double getDriverLeftVerticalAxis() {
-		return driverController.getRawAxis(LEFT_VERT_AXIS);
+		return -driverController.getRawAxis(LEFT_VERT_AXIS);
 	}
 
 
