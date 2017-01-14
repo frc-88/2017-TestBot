@@ -27,29 +27,29 @@ public class Drive extends Subsystem implements PIDOutput {
 
 	private final static int LOW_PROFILE = 0;
 	private final static double LOW_RAMPRATE = 60;
-	private final static double LOW_P = 0.0;
+	private final static double LOW_P = 0.065;
 	private final static double LOW_I = 0.0;
 	private final static double LOW_D = 0.0;
-	private final static double LOW_F = 0.5;
+	private final static double LOW_F = 0.6;
 	private final static int LOW_IZONE = 0;
-	private final static double LOW_MAX = 700;
+	private final static double LOW_MAX = 600;
 
 	private final static int HIGH_PROFILE = 1;
 	private final static double HIGH_RAMPRATE = 60;
-	private final static double HIGH_P = 0.0;
+	private final static double HIGH_P = 0.065;
 	private final static double HIGH_I = 0.0;
 	private final static double HIGH_D = 0.0;
-	private final static double HIGH_F = 0.5;
+	private final static double HIGH_F = 0.6;
 	private final static int HIGH_IZONE = 0;
 	private final static double HIGH_MAX = 1400;
 
 	private final static double DIFF_MAX = (HIGH_MAX - LOW_MAX)/100 + 1;
 
-	private final static double ROTATE_P = 0.01;
-	private final static double ROTATE_I = 0.0002;
+	private final static double ROTATE_P = 0.03;
+	private final static double ROTATE_I = 0.01;
 	private final static double ROTATE_D = 0.0;
 	private final static double ROTATE_F = 0.0;
-	private final static double ROTATE_TOLERANCE = 4.0f;
+	private final static double ROTATE_TOLERANCE = 2.0;
 	
 	public PIDController rotateController;
 	
@@ -73,7 +73,7 @@ public class Drive extends Subsystem implements PIDOutput {
 		lTalon.configNominalOutputVoltage(+0.0f, -0.0f);
 		lTalon.configPeakOutputVoltage(+12.0f, -12.0f);
 		lTalon.reverseSensor(false);
-		lTalon.reverseOutput(false);
+		lTalon.reverseOutput(true);
 		lTalon.enableBrakeMode(false);
 		lTalon.setVoltageRampRate(LOW_RAMPRATE);
 
@@ -193,16 +193,11 @@ public class Drive extends Subsystem implements PIDOutput {
 	}
 
 	private double getMaxSpeed() {
-		if ( (targetMaxSpeed - maxSpeed > DIFF_MAX ) || (targetMaxSpeed - maxSpeed < -DIFF_MAX) ) {
-			if (speedIncrement == 0) {
-				speedIncrement = (targetMaxSpeed - maxSpeed) / 100;
-			}
-			maxSpeed += speedIncrement;
-		} else {
-			speedIncrement = 0;
-			maxSpeed = targetMaxSpeed;
+		if (targetMaxSpeed > maxSpeed){
+			maxSpeed++;
+		} else if(targetMaxSpeed < maxSpeed) {
+			maxSpeed--;
 		}
-
 		return maxSpeed;
 	}
 
@@ -290,12 +285,14 @@ public class Drive extends Subsystem implements PIDOutput {
 
 	@Override
 	public void pidWrite(double output) {
-		double max = 0.4;
-		double min = 0.075;
+		double max = 0.3;
+		double min = 0.0;
+		
+		smartDashboard(0);
 		
 		if (output > max) {
 			output = max;
-		} else if (output < min && output >0) {
+		} else if ( (output > 0) && (output < min) ) {
 			output = min;
 		} else if (output == 0) {
 			output = 0;
@@ -305,7 +302,7 @@ public class Drive extends Subsystem implements PIDOutput {
 			output = 0 - max;
 		}
 		
-		setTarget(-output, output);
+		setTarget(output, -output);
 	}
 }
 
