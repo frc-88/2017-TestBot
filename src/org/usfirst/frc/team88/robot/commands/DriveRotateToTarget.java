@@ -23,6 +23,7 @@ public class DriveRotateToTarget extends Command {
         } else {
         	targetAngle = Robot.drive.getYaw() + Robot.jetsonTable.getDouble("Angle", 0.0);
         	Robot.drive.rotateController.setSetpoint(targetAngle);
+    		Robot.drive.setOpenLoop();
         	Robot.drive.rotateController.enable();
         }
     }

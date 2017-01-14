@@ -17,6 +17,7 @@ public class DriveFollowTarget extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+		Robot.drive.setOpenLoop();
        	Robot.drive.rotateController.enable();
     }
 
