@@ -46,10 +46,10 @@ public class Drive extends Subsystem implements PIDOutput {
 	private final static double DIFF_MAX = (HIGH_MAX - LOW_MAX)/100 + 1;
 
 	private final static double ROTATE_P = 0.03;
-	private final static double ROTATE_I = 0.0;
+	private final static double ROTATE_I = 0.01;
 	private final static double ROTATE_D = 0.0;
 	private final static double ROTATE_F = 0.0;
-	private final static double ROTATE_TOLERANCE = 4.0;
+	private final static double ROTATE_TOLERANCE = 2.0;
 	
 	public PIDController rotateController;
 	
@@ -286,11 +286,13 @@ public class Drive extends Subsystem implements PIDOutput {
 	@Override
 	public void pidWrite(double output) {
 		double max = 0.3;
-		double min = 0.075;
+		double min = 0.0;
+		
+		smartDashboard(0);
 		
 		if (output > max) {
 			output = max;
-		} else if (output < min && output >0) {
+		} else if ( (output > 0) && (output < min) ) {
 			output = min;
 		} else if (output == 0) {
 			output = 0;
