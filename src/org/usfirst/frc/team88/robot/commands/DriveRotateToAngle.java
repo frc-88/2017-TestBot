@@ -19,9 +19,9 @@ public class DriveRotateToAngle extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-		Robot.drive.rotateController.setSetpoint(targetAngle);
 		Robot.drive.setOpenLoop();
 		Robot.drive.rotateController.enable();    	
+		Robot.drive.rotateController.setSetpoint(targetAngle);
     }
 
     // Called repeatedly when this Command is scheduled to run
