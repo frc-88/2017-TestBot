@@ -19,7 +19,8 @@ public class DriveRotateToAngle extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-		Robot.drive.setOpenLoop();
+		// Robot.drive.setOpenLoop();
+    	Robot.drive.disableRampRate();
 		Robot.drive.rotateController.enable();    	
 		Robot.drive.rotateController.setSetpoint(targetAngle);
     }
@@ -33,18 +34,21 @@ public class DriveRotateToAngle extends Command {
 		SmartDashboard.putNumber("Rot Error", Robot.drive.rotateController.getError());
 		SmartDashboard.putNumber("Rot On Target", Robot.drive.rotateController.onTarget()?1:0);
 
-		return Robot.drive.rotateController.onTarget();}
+		return Robot.drive.rotateController.onTarget();
+	}
 
     // Called once after isFinished returns true
     protected void end() {
 		Robot.drive.rotateController.disable();
-		Robot.drive.setClosedLoopSpeed();
+		// Robot.drive.setClosedLoopSpeed();
+		Robot.drive.enableRampRate();
    }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
 		Robot.drive.rotateController.disable();    	
-		Robot.drive.setClosedLoopSpeed();
+		// Robot.drive.setClosedLoopSpeed();
+		Robot.drive.enableRampRate();
    }
 }

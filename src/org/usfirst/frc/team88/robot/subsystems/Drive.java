@@ -182,8 +182,6 @@ public class Drive extends Subsystem implements PIDOutput {
 
 		lTalon.changeControlMode(controlMode);
 		rTalon.changeControlMode(controlMode);
-		lTalon.setVoltageRampRate(0.0);
-		rTalon.setVoltageRampRate(0.0);
 	}
 
 	public void setClosedLoopSpeed(){
@@ -191,10 +189,18 @@ public class Drive extends Subsystem implements PIDOutput {
 
 		lTalon.changeControlMode(controlMode);
 		rTalon.changeControlMode(controlMode);
+	}
+	
+	public void disableRampRate() {
+		lTalon.setVoltageRampRate(0.0);
+		rTalon.setVoltageRampRate(0.0);
+	}
+
+	public void enableRampRate() {
 		lTalon.setVoltageRampRate(RAMPRATE);
 		rTalon.setVoltageRampRate(RAMPRATE);
 	}
-
+	
 	private double getMaxSpeed() {
 		if (targetMaxSpeed > maxSpeed){
 			maxSpeed++;
