@@ -26,7 +26,6 @@ public class Drive extends Subsystem implements PIDOutput {
 	public final static double WHEEL_DIAMETER = 4;
 
 	private final static int LOW_PROFILE = 0;
-	private final static double LOW_RAMPRATE = 60;
 	private final static double LOW_P = 0.065;
 	private final static double LOW_I = 0.0;
 	private final static double LOW_D = 0.0;
@@ -35,7 +34,6 @@ public class Drive extends Subsystem implements PIDOutput {
 	private final static double LOW_MAX = 600;
 
 	private final static int HIGH_PROFILE = 1;
-	private final static double HIGH_RAMPRATE = 60;
 	private final static double HIGH_P = 0.065;
 	private final static double HIGH_I = 0.0;
 	private final static double HIGH_D = 0.0;
@@ -43,6 +41,7 @@ public class Drive extends Subsystem implements PIDOutput {
 	private final static int HIGH_IZONE = 0;
 	private final static double HIGH_MAX = 1400;
 
+	private final static double RAMPRATE = 60;
 	private final static double DIFF_MAX = (HIGH_MAX - LOW_MAX)/100 + 1;
 
 	private final static double ROTATE_P = 0.4;
@@ -66,8 +65,8 @@ public class Drive extends Subsystem implements PIDOutput {
 	public Drive() {
 		// init left master
 		lTalon = new CANTalon(RobotMap.driveLeft);
-		lTalon.setPID(LOW_P, LOW_I, LOW_D, LOW_F, LOW_IZONE, LOW_RAMPRATE, LOW_PROFILE);
-		lTalon.setPID(HIGH_P, HIGH_I, HIGH_D, HIGH_F, HIGH_IZONE, HIGH_RAMPRATE, HIGH_PROFILE);
+		lTalon.setPID(LOW_P, LOW_I, LOW_D, LOW_F, LOW_IZONE, RAMPRATE, LOW_PROFILE);
+		lTalon.setPID(HIGH_P, HIGH_I, HIGH_D, HIGH_F, HIGH_IZONE, RAMPRATE, HIGH_PROFILE);
 		lTalon.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
 		lTalon.configEncoderCodesPerRev(360);
 		lTalon.configNominalOutputVoltage(+0.0f, -0.0f);
@@ -75,7 +74,7 @@ public class Drive extends Subsystem implements PIDOutput {
 		lTalon.reverseSensor(false);
 		lTalon.reverseOutput(true);
 		lTalon.enableBrakeMode(false);
-		lTalon.setVoltageRampRate(LOW_RAMPRATE);
+		lTalon.setVoltageRampRate(RAMPRATE);
 
 		// init left followers
 		lTalonFollower = new CANTalon(RobotMap.driveLeftSlave);
@@ -87,8 +86,8 @@ public class Drive extends Subsystem implements PIDOutput {
 
 		// init rigbt master
 		rTalon = new CANTalon(RobotMap.driveRight);
-		rTalon.setPID(LOW_P, LOW_I, LOW_D, LOW_F, LOW_IZONE, LOW_RAMPRATE, LOW_PROFILE);
-		rTalon.setPID(HIGH_P, HIGH_I, HIGH_D, HIGH_F, HIGH_IZONE, HIGH_RAMPRATE, HIGH_PROFILE);
+		rTalon.setPID(LOW_P, LOW_I, LOW_D, LOW_F, LOW_IZONE, RAMPRATE, LOW_PROFILE);
+		rTalon.setPID(HIGH_P, HIGH_I, HIGH_D, HIGH_F, HIGH_IZONE, RAMPRATE, HIGH_PROFILE);
 		rTalon.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
 		rTalon.configEncoderCodesPerRev(360);
 		rTalon.configNominalOutputVoltage(+0.0f, -0.0f);
@@ -96,7 +95,7 @@ public class Drive extends Subsystem implements PIDOutput {
 		rTalon.reverseSensor(true);
 		rTalon.reverseOutput(false);
 		rTalon.enableBrakeMode(false);
-		rTalon.setVoltageRampRate(LOW_RAMPRATE);
+		rTalon.setVoltageRampRate(RAMPRATE);
 
 		// init right followers
 		rTalonFollower = new CANTalon(RobotMap.driveRightSlave);
@@ -191,7 +190,17 @@ public class Drive extends Subsystem implements PIDOutput {
 		lTalon.changeControlMode(controlMode);
 		rTalon.changeControlMode(controlMode);
 	}
+	
+	public void disableRampRate() {
+		lTalon.setVoltageRampRate(0.0);
+		rTalon.setVoltageRampRate(0.0);
+	}
 
+	public void enableRampRate() {
+		lTalon.setVoltageRampRate(RAMPRATE);
+		rTalon.setVoltageRampRate(RAMPRATE);
+	}
+	
 	private double getMaxSpeed() {
 		if (targetMaxSpeed > maxSpeed){
 			maxSpeed++;

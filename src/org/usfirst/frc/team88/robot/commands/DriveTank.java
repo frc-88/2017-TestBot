@@ -26,6 +26,7 @@ public class DriveTank extends Command {
     protected void initialize() {
     	Robot.drive.setClosedLoopSpeed();
     	//Robot.drive.setOpenLoop();
+    	Robot.drive.enableRampRate();
     	state = DRIVING;
     }
 

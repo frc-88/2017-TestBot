@@ -23,6 +23,8 @@ public class DriveRotateToTarget extends Command {
         } else {
         	targetAngle = Robot.drive.getYaw() + Robot.jetsonTable.getDouble("Angle", 0.0);
         	Robot.drive.rotateController.setSetpoint(targetAngle);
+    		//Robot.drive.setOpenLoop();
+        	Robot.drive.disableRampRate();
         	Robot.drive.rotateController.enable();
         }
     }
@@ -41,7 +43,8 @@ public class DriveRotateToTarget extends Command {
     // Called once after isFinished returns true
     protected void end() {
 		if (!noTargetFound) {
-			Robot.drive.rotateController.disable();    	
+			Robot.drive.rotateController.disable();
+			Robot.drive.enableRampRate();
 		}
    }
 
@@ -50,6 +53,7 @@ public class DriveRotateToTarget extends Command {
     protected void interrupted() {
     	if (!noTargetFound) {
     		Robot.drive.rotateController.disable();
+    		Robot.drive.enableRampRate();
     	}
    }
 }
