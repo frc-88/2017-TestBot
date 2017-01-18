@@ -44,6 +44,10 @@ public class Robot extends IterativeRobot {
     	
 		oi = new OI();
         chooser = new SendableChooser();
+
+        SmartDashboard.putData(Scheduler.getInstance());
+        SmartDashboard.putData(drive);
+        
         SmartDashboard.putData("Auto mode", chooser);
         
 		SmartDashboard.putData("Rotate to 0", new DriveRotateToAngle(0.0));

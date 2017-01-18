@@ -78,10 +78,10 @@ public class Drive extends Subsystem implements PIDOutput {
 		lTalon.setVoltageRampRate(RAMPRATE);
 
 		// init left followers
-		lTalonFollower = new CANTalon(RobotMap.driveLeftSlave);
+		lTalonFollower = new CANTalon(RobotMap.driveLeftFollower);
 		lTalonFollower.changeControlMode(CANTalon.TalonControlMode.Follower);
 		lTalonFollower.set(lTalon.getDeviceID());
-		lTalonFollower2 = new CANTalon(RobotMap.driveLeftSlave2);
+		lTalonFollower2 = new CANTalon(RobotMap.driveLeftFollower2);
 		lTalonFollower2.changeControlMode(CANTalon.TalonControlMode.Follower);
 		lTalonFollower2.set(lTalon.getDeviceID());
 
@@ -99,10 +99,10 @@ public class Drive extends Subsystem implements PIDOutput {
 		rTalon.setVoltageRampRate(RAMPRATE);
 
 		// init right followers
-		rTalonFollower = new CANTalon(RobotMap.driveRightSlave);
+		rTalonFollower = new CANTalon(RobotMap.driveRightFollower);
 		rTalonFollower.changeControlMode(CANTalon.TalonControlMode.Follower);
 		rTalonFollower.set(rTalon.getDeviceID());
-		rTalonFollower2 = new CANTalon(RobotMap.driveRightSlave2);
+		rTalonFollower2 = new CANTalon(RobotMap.driveRightFollower2);
 		rTalonFollower2.changeControlMode(CANTalon.TalonControlMode.Follower);
 		rTalonFollower2.set(rTalon.getDeviceID());
 
