@@ -285,6 +285,14 @@ public class Drive extends Subsystem implements PIDOutput {
 		SmartDashboard.putNumber("NT_Distance", Robot.jetsonTable.getNumber("Distance",0.0));
 		SmartDashboard.putNumber("NT_Angle", Robot.jetsonTable.getNumber("Angle",0.0));
 	}
+    
+    public String getStatus() {
+        return lTalon.getSpeed() + "," +
+                lTalon.getPosition() + "," +
+                rTalon.getSpeed() + "," +
+                rTalon.getPosition()+ "," +
+                navx.getYaw();
+    }
 
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
