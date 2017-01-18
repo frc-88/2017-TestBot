@@ -1,5 +1,7 @@
 package org.usfirst.frc.team88.robot.commands;
 
+import java.io.*;
+
 import org.usfirst.frc.team88.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -10,6 +12,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class DriveRotateToAngle extends Command {
 	double targetAngle;
+    private int count;
+    private File file;
+    private FileWriter fileWriter;
+    private BufferedWriter bufferedWriter;
 	
     public DriveRotateToAngle(double angle) {
         requires(Robot.drive);
@@ -20,6 +26,8 @@ public class DriveRotateToAngle extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	//Robot.drive.setOpenLoop();
+        count = 0;
+        initLogFile();
     	Robot.drive.disableRampRate();
     	Robot.drive.rotateController.reset();
     	Robot.drive.rotateController.setSetpoint(targetAngle);
@@ -29,6 +37,7 @@ public class DriveRotateToAngle extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+        writeLog(count++ + "," + Robot.drive.getStatus() + "\n");
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -41,6 +50,7 @@ public class DriveRotateToAngle extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+        closeLog();
 		Robot.drive.rotateController.disable();
 		//Robot.drive.setClosedLoopSpeed();
 		Robot.drive.enableRampRate();
@@ -49,8 +59,42 @@ public class DriveRotateToAngle extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+        closeLog();
 		Robot.drive.rotateController.disable();    	
 		//Robot.drive.setClosedLoopSpeed();
 		Robot.drive.enableRampRate();
    }
+    
+    private void initLogFile() {
+        try {
+            file = new File("/u/rotatelog.txt");
+            if(!file.exists()){
+                file.createNewFile();
+            }
+            fileWriter = new FileWriter(file);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        bufferedWriter = new BufferedWriter(fileWriter);
+    }
+    
+    private void writeLog(String text) {
+        try {
+            bufferedWriter.write(text);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
+    private void closeLog() {
+        try {
+            bufferedWriter.close();
+            fileWriter.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }
