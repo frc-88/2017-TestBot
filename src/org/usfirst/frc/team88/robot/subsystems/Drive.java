@@ -177,8 +177,8 @@ public class Drive extends Subsystem implements PIDOutput {
 	}
 
 	/**
-	 * The below was based on (ie, copied from) very similar code in the 
-	 * WPILib RobotDrive class on 1/18/2017
+	 * The below was based on (ie, copied from) very similar code in the WPILib
+	 * RobotDrive class on 1/18/2017
 	 * 
 	 * Drive the motors at "outputMagnitude" and "curve". Both outputMagnitude
 	 * and curve are -1.0 to +1.0 values, where 0.0 represents stopped and not
@@ -228,7 +228,7 @@ public class Drive extends Subsystem implements PIDOutput {
 			leftOutput = outputMagnitude;
 			rightOutput = outputMagnitude;
 		}
-		
+
 		setTarget(leftOutput, rightOutput);
 	}
 
@@ -270,24 +270,8 @@ public class Drive extends Subsystem implements PIDOutput {
 		rTalon.setPosition(0);
 	}
 
-	public double getAvgEncoderPosition() {
-		return (lTalon.getPosition() + rTalon.getPosition())/2.0;
-	}
-	
-	public double getLeftCurrent() {
-		return lTalon.getOutputCurrent();
-	}
-
-	public double getRightCurrent() {
-		return rTalon.getOutputCurrent();
-	}
-
-	public double getLeftSpeed() {
-		return lTalon.getSpeed();
-	}
-
-	public double getRightSpeed() {
-		return rTalon.getSpeed();
+	public double getAvgPosition() {
+		return (lTalon.getPosition() + rTalon.getPosition()) / 2.0;
 	}
 
 	public double getAvgSpeed() {
@@ -308,27 +292,26 @@ public class Drive extends Subsystem implements PIDOutput {
 		return navx.getYaw();
 	}
 
-	public void smartDashboard(int state) {
-		SmartDashboard.putNumber("LeftEncoder: ", lTalon.getPosition());
-		SmartDashboard.putNumber("LeftSpeed: ", lTalon.getSpeed());
+	public void smartDashboard() {
+		SmartDashboard.putNumber("LeftPosition: ", lTalon.getPosition());
 		SmartDashboard.putNumber("LeftEncVel: ", lTalon.getEncVelocity());
-
-		SmartDashboard.putNumber("RightEncoder: ", rTalon.getPosition());
-		SmartDashboard.putNumber("RightSpeed: ", rTalon.getSpeed());
-		SmartDashboard.putNumber("RightEncVel: ", rTalon.getEncVelocity());
-
+		SmartDashboard.putNumber("LeftSpeed: ", lTalon.getSpeed());
+		SmartDashboard.putNumber("LeftSetPoint", lTalon.getSetpoint());
 		SmartDashboard.putNumber("LeftError: ", lTalon.getClosedLoopError());
-		SmartDashboard.putNumber("RightError: ", rTalon.getClosedLoopError());
+		SmartDashboard.putNumber("LeftCurrent", lTalon.getOutputCurrent());
+		SmartDashboard.putNumber("LeftVoltage", lTalon.getOutputVoltage());
 
-		SmartDashboard.putNumber("ShifterState: ", state);
+		SmartDashboard.putNumber("RightPosition: ", rTalon.getPosition());
+		SmartDashboard.putNumber("RightEncVel: ", rTalon.getEncVelocity());
+		SmartDashboard.putNumber("RightSpeed: ", rTalon.getSpeed());
+		SmartDashboard.putNumber("RightSetPoint", rTalon.getSetpoint());
+		SmartDashboard.putNumber("RightError: ", rTalon.getClosedLoopError());
+		SmartDashboard.putNumber("RightCurrent", rTalon.getOutputCurrent());
+		SmartDashboard.putNumber("RightVoltage", rTalon.getOutputVoltage());
 
 		SmartDashboard.putNumber("targetMaxspeed", targetMaxSpeed);
 		SmartDashboard.putNumber("maxSpeed", getMaxSpeed());
-
-		// for Network Tables stuff
 		SmartDashboard.putBoolean("lowGear", isLowGear());
-		SmartDashboard.putNumber("leftCurrent", lTalon.getOutputCurrent());
-		SmartDashboard.putNumber("rightCurrent", rTalon.getOutputCurrent());
 
 		// NavX stuff
 		SmartDashboard.putBoolean("IMU_Connected", navx.isConnected());
@@ -336,7 +319,6 @@ public class Drive extends Subsystem implements PIDOutput {
 		SmartDashboard.putNumber("IMU_Yaw", navx.getYaw());
 		SmartDashboard.putNumber("IMU_Pitch", navx.getPitch());
 		SmartDashboard.putNumber("IMU_Roll", navx.getRoll());
-
 		SmartDashboard.putNumber("Displacement_X", navx.getDisplacementX());
 		SmartDashboard.putNumber("Displacement_Y", navx.getDisplacementY());
 
@@ -350,18 +332,12 @@ public class Drive extends Subsystem implements PIDOutput {
 				+ "," + navx.getYaw();
 	}
 
-	public void initDefaultCommand() {
-		// Set the default command for a subsystem here.
-		setDefaultCommand(new DriveTank());
-		// setDefaultCommand(new DriveArcade());
-	}
-
 	@Override
 	public void pidWrite(double output) {
 		double max = 0.7;
 		double min = 0.06;
 
-		smartDashboard(0);
+		smartDashboard();
 
 		if (output > max) {
 			output = max;
@@ -380,5 +356,11 @@ public class Drive extends Subsystem implements PIDOutput {
 		SmartDashboard.putNumber("Rotate Output", output);
 
 		setTarget(output, -output);
+	}
+
+	public void initDefaultCommand() {
+		// Set the default command for a subsystem here.
+		setDefaultCommand(new DriveTank());
+		// setDefaultCommand(new DriveArcade());
 	}
 }

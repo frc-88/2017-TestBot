@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.command.Command;
  *
  */
 public class DriveDistance extends Command {
+	// states
 	private static final int ACCELERATE = 1;
 	private static final int CRUISE = 2;
 	private static final int DECELERATE = 3;
@@ -15,16 +16,16 @@ public class DriveDistance extends Command {
 	private static final int END = 5;
 	
 	private int state;
-	private double target;
+	private double targetDistance;
 	private double targetYaw;
-	private double rampup;
+	private double rampupDistance;
 	private double speed;
 	
     public DriveDistance(double distance) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     	requires(Robot.drive);
-    	target = distance;
+    	targetDistance = distance;
     }
 
     // Called just before this Command runs the first time
@@ -54,19 +55,19 @@ public class DriveDistance extends Command {
     		speed = speed + 0.05;
     		Robot.drive.driveCurve(speed, (targetYaw - Robot.drive.getYaw()) * 0.03);
     		
-    		if (Robot.drive.getAvgEncoderPosition() > target / 2.0) {
+    		if (Robot.drive.getAvgPosition() > targetDistance / 2.0) {
     			state = DECELERATE;
     		}
     		
     		if (speed > 0.6) {
-    			rampup = Robot.drive.getAvgEncoderPosition();
+    			rampupDistance = Robot.drive.getAvgPosition();
     			state = CRUISE;
     		}
     		break;
     	case CRUISE: // consistent speed until we get close
     		Robot.drive.driveCurve(speed, (targetYaw - Robot.drive.getYaw()) * 0.03);
     		
-    		if (Robot.drive.getAvgEncoderPosition() > target - rampup) {
+    		if (Robot.drive.getAvgPosition() > targetDistance - rampupDistance) {
     			state = DECELERATE;
     		}
     		break;
