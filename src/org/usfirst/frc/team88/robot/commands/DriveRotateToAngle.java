@@ -19,10 +19,12 @@ public class DriveRotateToAngle extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-		// Robot.drive.setOpenLoop();
+    	//Robot.drive.setOpenLoop();
     	Robot.drive.disableRampRate();
-		Robot.drive.rotateController.enable();    	
-		Robot.drive.rotateController.setSetpoint(targetAngle);
+    	Robot.drive.rotateController.reset();
+    	Robot.drive.rotateController.setSetpoint(targetAngle);
+    	Robot.drive.rotateController.enable();    	
+		
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -40,7 +42,7 @@ public class DriveRotateToAngle extends Command {
     // Called once after isFinished returns true
     protected void end() {
 		Robot.drive.rotateController.disable();
-		// Robot.drive.setClosedLoopSpeed();
+		//Robot.drive.setClosedLoopSpeed();
 		Robot.drive.enableRampRate();
    }
 
@@ -48,7 +50,7 @@ public class DriveRotateToAngle extends Command {
     // subsystems is scheduled to run
     protected void interrupted() {
 		Robot.drive.rotateController.disable();    	
-		// Robot.drive.setClosedLoopSpeed();
+		//Robot.drive.setClosedLoopSpeed();
 		Robot.drive.enableRampRate();
    }
 }
