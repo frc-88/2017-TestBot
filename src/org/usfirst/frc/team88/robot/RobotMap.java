@@ -8,12 +8,12 @@ package org.usfirst.frc.team88.robot;
 public class RobotMap {
 
 	public static final int driveLeft = 1;
-	public static final int driveLeftSlave = 3;
-	public static final int driveLeftSlave2 = 5;
+	public static final int driveLeftFollower = 3;
+	public static final int driveLeftFollower2 = 5;
 	
 	public static final int driveRight = 0;
-	public static final int driveRightSlave = 2;
-	public static final int driveRightSlave2 = 4;
+	public static final int driveRightFollower = 2;
+	public static final int driveRightFollower2 = 4;
 	
 	public static final int shifterSolenoidLow = 0;
 	public static final int shifterSolenoidHigh = 1;

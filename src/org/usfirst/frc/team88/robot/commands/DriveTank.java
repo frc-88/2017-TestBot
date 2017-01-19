@@ -35,13 +35,8 @@ public class DriveTank extends Command {
     	
     	switch (state){
     	case DRIVING:
-        	left = Robot.oi.getDriverLeftVerticalAxis();
-        	right = Robot.oi.getDriverRightVerticalAxis();
-        	
-        	left = Robot.oi.applyDeadZone(left);
-        	right = Robot.oi.applyDeadZone(right);
-        	
-        	Robot.drive.smartDashboard(state);
+        	left = Robot.oi.getDriverLeftY();
+        	right = Robot.oi.getDriverRightY();
         	
         	speed = Math.abs(Robot.drive.getAvgSpeed());
         	
@@ -52,25 +47,22 @@ public class DriveTank extends Command {
         	if (Robot.drive.isAutoShift() && (lastShift > (Robot.drive.isLowGear() ? 50 : 5) && 
         			((speed > SHIFTSPEED && Robot.drive.isLowGear() == true)||
          			 (speed < SHIFTSPEED && Robot.drive.isLowGear() == false)))){
-        		state = SHIFT;
+        		state = PREP;
         	}
     		break;
     		
     	case PREP:
-    		// temp - skipping this state
-        	Robot.drive.smartDashboard(state);
-
     		state = SHIFT;
     		break;
     		
     	case SHIFT:
-        	Robot.drive.smartDashboard(state);
-
     		Robot.drive.shift();
     		lastShift = 0;
         	state = DRIVING;
     		break;
     	}
+    	
+    	Robot.drive.smartDashboard();
     }
 
     // Make this return true when this Command no longer needs to run execute()

@@ -12,8 +12,14 @@ import org.usfirst.frc.team88.robot.commands.DriveToggleAutoShift;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
+	private static final int LEFT_HORIZ_AXIS = 0;
 	private static final int LEFT_VERT_AXIS = 1;
+	private static final int RIGHT_HORIZ_AXIS = 4;
 	private static final int RIGHT_VERT_AXIS = 5;
+	private static final int LEFT_Z_AXIS = 3;
+	private static final int RIGHT_Z_AXIS = 2;
+
+	
 	private static final double DEADZONE = 0.15;
 	
 	// driver controller setup
@@ -34,18 +40,23 @@ public class OI {
 		driverButtonB.whenPressed(new DriveShift());
 	}
 	
-	
-	public double getDriverRightVerticalAxis() {
-		return -driverController.getRawAxis(RIGHT_VERT_AXIS);
+	public double getDriverRightY() {
+		return applyDeadZone(-driverController.getRawAxis(RIGHT_VERT_AXIS));
 	}
 	
-	public double getDriverLeftVerticalAxis() {
-		return -driverController.getRawAxis(LEFT_VERT_AXIS);
+	public double getDriverRightX() {
+		return applyDeadZone(driverController.getRawAxis(RIGHT_HORIZ_AXIS));
+	}
+	
+	public double getDriverLeftY() {
+		return applyDeadZone(-driverController.getRawAxis(LEFT_VERT_AXIS));
 	}
 
+	public double getDriverLeftX() {
+		return applyDeadZone(driverController.getRawAxis(LEFT_HORIZ_AXIS));
+	}
 
-
-	public double applyDeadZone(double value) {
+	private double applyDeadZone(double value) {
 		if (Math.abs(value) < DEADZONE) {
 			return 0.0;
 		} else if (value > 0) {
