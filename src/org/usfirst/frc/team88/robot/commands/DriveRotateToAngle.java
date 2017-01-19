@@ -27,7 +27,7 @@ public class DriveRotateToAngle extends Command {
     protected void initialize() {
     	//Robot.drive.setOpenLoop();
         count = 0;
-        initLogFile();
+        //initLogFile();
     	Robot.drive.disableRampRate();
     	Robot.drive.rotateController.reset();
     	Robot.drive.rotateController.setSetpoint(targetAngle);
@@ -37,7 +37,8 @@ public class DriveRotateToAngle extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        writeLog(count++ + "," + Robot.drive.getStatus() + "\n");
+    	Robot.drive.smartDashboard(0);
+    	//writeLog(count++ + "," + Robot.drive.getStatus() + "\n");
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -50,7 +51,7 @@ public class DriveRotateToAngle extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-        closeLog();
+        //closeLog();
 		Robot.drive.rotateController.disable();
 		//Robot.drive.setClosedLoopSpeed();
 		Robot.drive.enableRampRate();
@@ -59,7 +60,7 @@ public class DriveRotateToAngle extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-        closeLog();
+        //closeLog();
 		Robot.drive.rotateController.disable();    	
 		//Robot.drive.setClosedLoopSpeed();
 		Robot.drive.enableRampRate();
@@ -67,7 +68,7 @@ public class DriveRotateToAngle extends Command {
     
     private void initLogFile() {
         try {
-            file = new File("/u/rotatelog.txt");
+            file = new File("/home/lvuser/rotatelog.txt");
             if(!file.exists()){
                 file.createNewFile();
             }
