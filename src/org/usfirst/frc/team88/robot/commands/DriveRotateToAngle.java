@@ -37,7 +37,6 @@ public class DriveRotateToAngle extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.drive.smartDashboard(0);
     	//writeLog(count++ + "," + Robot.drive.getStatus() + "\n");
     }
 
