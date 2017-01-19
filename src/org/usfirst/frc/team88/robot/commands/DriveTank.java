@@ -35,11 +35,8 @@ public class DriveTank extends Command {
     	
     	switch (state){
     	case DRIVING:
-        	left = Robot.oi.getDriverLeftVerticalAxis();
-        	right = Robot.oi.getDriverRightVerticalAxis();
-        	
-        	left = Robot.oi.applyDeadZone(left);
-        	right = Robot.oi.applyDeadZone(right);
+        	left = Robot.oi.getDriverLeftY();
+        	right = Robot.oi.getDriverRightY();
         	
         	speed = Math.abs(Robot.drive.getAvgSpeed());
         	
