@@ -45,7 +45,7 @@ public class Drive extends Subsystem implements PIDOutput {
 	private final static double RAMPRATE = 60;
 	private final static double DIFF_MAX = (HIGH_MAX - LOW_MAX) / 100 + 1;
 
-	private final static double ROTATE_P = 0.007;
+	private final static double ROTATE_P = 0.0078;
 	private final static double ROTATE_I = 0.00003;
 	private final static double ROTATE_D = 0.0;
 	private final static double ROTATE_F = 0.0;
