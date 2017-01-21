@@ -3,12 +3,14 @@ package org.usfirst.frc.team88.robot.commands;
 import org.usfirst.frc.team88.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
  */
 public class DriveDistance extends Command {
 	// states
+	private static final int PREP = 0;
 	private static final int ACCELERATE = 1;
 	private static final int CRUISE = 2;
 	private static final int DECELERATE = 3;
@@ -30,7 +32,7 @@ public class DriveDistance extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	state = ACCELERATE;
+    	state = PREP;
     	// should we switch to open loop mode? No, I think.
     	// we should probably at least remove ramp rate
     	Robot.drive.disableRampRate();
@@ -51,8 +53,13 @@ public class DriveDistance extends Command {
     	//  
     	
     	switch (state) {
+    	case PREP:
+    		if (Robot.drive.getAvgPosition() < 1) {
+    			state = ACCELERATE;
+    		}
+    		break;
     	case ACCELERATE: // ramping up, gradually increase velocity until we get to desired speed
-    		speed = speed + 0.05;
+    		speed = speed + 0.01;
     		Robot.drive.driveCurve(speed, (targetYaw - Robot.drive.getYaw()) * 0.03);
     		
     		if (Robot.drive.getAvgPosition() > targetDistance / 2.0) {
@@ -72,9 +79,9 @@ public class DriveDistance extends Command {
     		}
     		break;
     	case DECELERATE: // slow down as we approach target, gradually decrease velocity
-    		speed = speed - 0.05;
+    		speed = speed - 0.01;
     		Robot.drive.driveCurve(speed, (targetYaw - Robot.drive.getYaw()) * 0.03);
-    		if (speed < 0.05) {
+    		if (speed < 0.02) {
     			state = STOP;
     		}
     		break;
@@ -83,6 +90,8 @@ public class DriveDistance extends Command {
     		state = END;
     		break;
     	}
+    	
+    	SmartDashboard.putNumber("Target Yaw", targetYaw);
     }
 
     // Make this return true when this Command no longer needs to run execute()

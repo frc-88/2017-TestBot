@@ -24,7 +24,7 @@ public class Drive extends Subsystem implements PIDOutput {
 	public final static double ENC_CYCLES_PER_REV = 360.0;
 	public final static double GEAR_RATIO = (3 * 34) / 50;
 	public final static double WHEEL_DIAMETER = 4;
-	public final static double SENSITIVITY = 0.5;
+	public final static double SENSITIVITY = 0.2;
 
 	private final static int LOW_PROFILE = 0;
 	private final static double LOW_P = 0.065;
@@ -174,6 +174,8 @@ public class Drive extends Subsystem implements PIDOutput {
 			break;
 
 		}
+		smartDashboard();
+
 	}
 
 	/**
@@ -229,6 +231,7 @@ public class Drive extends Subsystem implements PIDOutput {
 			rightOutput = outputMagnitude;
 		}
 
+		smartDashboard();
 		setTarget(leftOutput, rightOutput);
 	}
 
@@ -290,6 +293,10 @@ public class Drive extends Subsystem implements PIDOutput {
 
 	public double getYaw() {
 		return navx.getYaw();
+	}
+	
+	public void zeroYaw(){
+		navx.zeroYaw();
 	}
 
 	public void smartDashboard() {

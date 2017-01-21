@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
+import org.usfirst.frc.team88.robot.commands.AutoHallway;
+import org.usfirst.frc.team88.robot.commands.DriveDistance;
 import org.usfirst.frc.team88.robot.commands.DriveFollowTarget;
 import org.usfirst.frc.team88.robot.commands.DriveRotateToAngle;
 import org.usfirst.frc.team88.robot.commands.DriveRotateToTarget;
@@ -59,7 +61,11 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Follow Target", new DriveFollowTarget());
 		
 		SmartDashboard.putData("Toggle Autoshift", new DriveToggleAutoShift());
-		SmartDashboard.putData("Manual Shift", new DriveShift());		
+		SmartDashboard.putData("Manual Shift", new DriveShift());
+		
+		SmartDashboard.putData("Drive Distance", new DriveDistance(10));
+		SmartDashboard.putData("Hallway Auto", new AutoHallway());
+		
     }
 	
 	/**
