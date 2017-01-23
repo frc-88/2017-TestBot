@@ -7,12 +7,8 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
-import org.usfirst.frc.team88.robot.commands.DriveFollowTarget;
-import org.usfirst.frc.team88.robot.commands.DriveRotateToAngle;
-import org.usfirst.frc.team88.robot.commands.DriveRotateToTarget;
-import org.usfirst.frc.team88.robot.commands.DriveShift;
-import org.usfirst.frc.team88.robot.commands.DriveToggleAutoShift;
-import org.usfirst.frc.team88.robot.subsystems.Drive;
+import org.usfirst.frc.team88.robot.commands.*;
+import org.usfirst.frc.team88.robot.subsystems.*;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -59,7 +55,16 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Follow Target", new DriveFollowTarget());
 		
 		SmartDashboard.putData("Toggle Autoshift", new DriveToggleAutoShift());
-		SmartDashboard.putData("Manual Shift", new DriveShift());		
+		SmartDashboard.putData("Manual Shift", new DriveShift());
+		
+		SmartDashboard.putData("Drive Distance", new DriveDistance(7.5));
+		SmartDashboard.putData("Drive Distance Reverese", new DriveDistanceReverse(-7.5));
+		SmartDashboard.putData("Hallway Auto", new AutoHallway());
+		
+		SmartDashboard.putData("Turn Left 90", new DriveTurnLeft90());
+		SmartDashboard.putData("Turn Right 90", new DriveTurnRight90());
+		SmartDashboard.putData("40 Ball Auto", new Auto40Ball());
+		
     }
 	
 	/**
