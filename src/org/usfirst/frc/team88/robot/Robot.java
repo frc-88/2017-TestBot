@@ -64,6 +64,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Turn Left 90", new DriveTurnLeft90());
 		SmartDashboard.putData("Turn Right 90", new DriveTurnRight90());
 		SmartDashboard.putData("40 Ball Auto", new Auto40Ball());
+		SmartDashboard.putData("Drive Distance Arc", new DriveDistanceArc(3.8));
 		
     }
 	

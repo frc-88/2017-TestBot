@@ -234,6 +234,35 @@ public class Drive extends Subsystem implements PIDOutput {
 		smartDashboard();
 		setTarget(leftOutput, rightOutput);
 	}
+	
+	public void driveCurve(double outputMagnitude, double curve, double sensitivity) {
+		final double leftOutput;
+		final double rightOutput;
+
+		if (curve < 0) {
+			double value = Math.log(-curve);
+			double ratio = (value - sensitivity) / (value + sensitivity);
+			if (ratio == 0) {
+				ratio = .0000000001;
+			}
+			leftOutput = outputMagnitude / ratio;
+			rightOutput = outputMagnitude;
+		} else if (curve > 0) {
+			double value = Math.log(curve);
+			double ratio = (value - sensitivity) / (value + sensitivity);
+			if (ratio == 0) {
+				ratio = .0000000001;
+			}
+			leftOutput = outputMagnitude;
+			rightOutput = outputMagnitude / ratio;
+		} else {
+			leftOutput = outputMagnitude;
+			rightOutput = outputMagnitude;
+		}
+
+		smartDashboard();
+		setTarget(leftOutput, rightOutput);
+	}
 
 	public void setOpenLoop() {
 		controlMode = CANTalon.TalonControlMode.PercentVbus;
