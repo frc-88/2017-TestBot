@@ -24,14 +24,13 @@ public class DriveFieldOrientated extends Command {
 	// Called just before this Command runs the first time
 	protected void initialize() {
 		Robot.drive.setClosedLoopSpeed();
-		// Robot.drive.setOpenLoop();
 		Robot.drive.enableRampRate();
 		state = DRIVING;
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-		double x, y, speed, magnitude, angle;
+		double x, y, speed, magnitude, angle, curve;
 
 		switch (state) {
 		case DRIVING:
@@ -42,14 +41,22 @@ public class DriveFieldOrientated extends Command {
 
 			if (x == 0 && y == 0) {
 				angle = 0;
+				curve = 0;
 			} else {
 				angle = Math.toDegrees(Math.atan2(x, y));
+				curve = angle - Robot.drive.getYaw();
+			}
+			
+			if (curve > 180) {
+				curve = curve - 360;
+			} else if (curve < -180) {
+				curve = curve + 360;
 			}
 
 			SmartDashboard.putNumber("Joystick Angle", angle);
-			SmartDashboard.putNumber("Curve", Robot.drive.getYaw() - angle);
+			SmartDashboard.putNumber("Curve", curve);
 			
-			//Robot.drive.driveCurve(magnitude, Robot.drive.getYaw() - angle);
+			Robot.drive.driveCurve(magnitude, curve / 180.0);
 
 			speed = Math.abs(Robot.drive.getAvgSpeed());
 			lastShift++;
