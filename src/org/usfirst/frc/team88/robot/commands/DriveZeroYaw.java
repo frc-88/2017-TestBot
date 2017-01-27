@@ -2,34 +2,22 @@ package org.usfirst.frc.team88.robot.commands;
 
 import org.usfirst.frc.team88.robot.Robot;
 
-import edu.wpi.first.wpilibj.command.TimedCommand;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 
 /**
  *
  */
-public class DriveZeroYaw extends TimedCommand {
+public class DriveZeroYaw extends InstantCommand {
 
-    public DriveZeroYaw(double timeout) {
-        super(timeout);
+    public DriveZeroYaw() {
+        super();
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
 
-    // Called just before this Command runs the first time
+    // Called once when the command executes
     protected void initialize() {
     	Robot.drive.zeroYaw();
     }
 
-    // Called repeatedly when this Command is scheduled to run
-    protected void execute() {
-    }
-
-    // Called once after timeout
-    protected void end() {
-    }
-
-    // Called when another command which requires one or more of the same
-    // subsystems is scheduled to run
-    protected void interrupted() {
-    }
 }

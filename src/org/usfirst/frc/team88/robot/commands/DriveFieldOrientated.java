@@ -13,6 +13,7 @@ public class DriveFieldOrientated extends Command {
 	private static final int PREP = 2;
 	private static final int SHIFT = 3;
 	private static final double SHIFTSPEED = 500.0;
+	public final static double SENSITIVITY = 0.5;
 
 	private int state;
 	private int lastShift;
@@ -46,7 +47,7 @@ public class DriveFieldOrientated extends Command {
 				angle = Math.toDegrees(Math.atan2(x, y));
 				curve = angle - Robot.drive.getYaw();
 			}
-			
+
 			if (curve > 180) {
 				curve = curve - 360;
 			} else if (curve < -180) {
@@ -55,9 +56,11 @@ public class DriveFieldOrientated extends Command {
 
 			SmartDashboard.putNumber("Joystick Angle", angle);
 			SmartDashboard.putNumber("Curve", curve);
-			
-			Robot.drive.driveCurve(magnitude, curve / 180.0);
-
+			if(magnitude < 0){
+				Robot.drive.driveCurve(magnitude, -curve / 180.0, SENSITIVITY);
+			} else{
+				Robot.drive.driveCurve(magnitude, curve / 180.0, SENSITIVITY);
+			}
 			speed = Math.abs(Robot.drive.getAvgSpeed());
 			lastShift++;
 

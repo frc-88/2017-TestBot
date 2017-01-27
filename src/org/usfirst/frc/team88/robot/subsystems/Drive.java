@@ -207,39 +207,18 @@ public class Drive extends Subsystem implements PIDOutput {
 	 *            given value of curve and wheelbase w.
 	 */
 	public void driveCurve(double outputMagnitude, double curve) {
-		final double leftOutput;
-		final double rightOutput;
+		driveCurve(outputMagnitude, curve, SENSITIVITY);
 
-		if (curve < 0) {
-			double value = Math.log(-curve);
-			double ratio = (value - SENSITIVITY) / (value + SENSITIVITY);
-			if (ratio == 0) {
-				ratio = .0000000001;
-			}
-			leftOutput = outputMagnitude / ratio;
-			rightOutput = outputMagnitude;
-		} else if (curve > 0) {
-			double value = Math.log(curve);
-			double ratio = (value - SENSITIVITY) / (value + SENSITIVITY);
-			if (ratio == 0) {
-				ratio = .0000000001;
-			}
-			leftOutput = outputMagnitude;
-			rightOutput = outputMagnitude / ratio;
-		} else {
-			leftOutput = outputMagnitude;
-			rightOutput = outputMagnitude;
-		}
-
-		smartDashboard();
-		setTarget(leftOutput, rightOutput);
 	}
-	
+
 	public void driveCurve(double outputMagnitude, double curve, double sensitivity) {
 		final double leftOutput;
 		final double rightOutput;
 
-		if (curve < 0) {
+		if (outputMagnitude == 0) {
+			leftOutput = curve;
+			rightOutput = -curve;
+		} else if (curve < 0) {
 			double value = Math.log(-curve);
 			double ratio = (value - sensitivity) / (value + sensitivity);
 			if (ratio == 0) {
@@ -323,7 +302,7 @@ public class Drive extends Subsystem implements PIDOutput {
 	public double getYaw() {
 		return navx.getYaw();
 	}
-	
+
 	public void zeroYaw(){
 		navx.zeroYaw();
 	}
@@ -365,7 +344,7 @@ public class Drive extends Subsystem implements PIDOutput {
 
 	public String getStatus() {
 		return lTalon.getSpeed() + "," + lTalon.getPosition() + "," + rTalon.getSpeed() + "," + rTalon.getPosition()
-				+ "," + navx.getYaw();
+		+ "," + navx.getYaw();
 	}
 
 	@Override
