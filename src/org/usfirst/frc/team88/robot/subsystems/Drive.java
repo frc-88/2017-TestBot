@@ -214,8 +214,20 @@ public class Drive extends Subsystem implements PIDOutput {
 	public void driveCurve(double outputMagnitude, double curve, double sensitivity) {
 		final double leftOutput;
 		final double rightOutput;
+		final double minimum = 0.15;
+		final double minRange = 0.008;
 
 		if (outputMagnitude == 0) {
+			if(curve < minRange && curve > -minRange){
+				curve = 0;
+			}
+			else if(curve < minimum && curve > 0){
+				curve = minimum;
+			}
+			else if(curve > -minimum && curve < 0){
+				curve = -minimum;
+			}
+			SmartDashboard.putNumber("The Curve Value", curve);
 			leftOutput = curve;
 			rightOutput = -curve;
 		} else if (curve < 0) {
