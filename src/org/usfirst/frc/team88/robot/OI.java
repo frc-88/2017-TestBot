@@ -3,16 +3,22 @@ package org.usfirst.frc.team88.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import org.usfirst.frc.team88.robot.commands.PutBoolean;
-import org.usfirst.frc.team88.robot.commands.PutDouble;
+
+import org.usfirst.frc.team88.robot.commands.*;
 
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
+	private static final int LEFT_HORIZ_AXIS = 0;
 	private static final int LEFT_VERT_AXIS = 1;
+	private static final int RIGHT_HORIZ_AXIS = 4;
 	private static final int RIGHT_VERT_AXIS = 5;
+	private static final int LEFT_Z_AXIS = 3;
+	private static final int RIGHT_Z_AXIS = 2;
+
+	
 	private static final double DEADZONE = 0.15;
 	
 	// driver controller setup
@@ -29,41 +35,27 @@ public class OI {
 	private Button driverButtonRightAxisPress = new JoystickButton(driverController, 10);
 
 	public OI() {
-//		driverButtonA.whenPressed(new PutBoolean("driverButtonA", true));
-//		driverButtonA.whenReleased(new PutBoolean("driverButtonA", false));
-//
-//		driverButtonB.whenPressed(new PutBoolean("driverButtonB", true));
-//		driverButtonB.whenReleased(new PutBoolean("driverButtonB", false));
-//
-//		driverButtonX.whenPressed(new PutBoolean("driverButtonX", true));
-//		driverButtonX.whenReleased(new PutBoolean("driverButtonX", false));
-//
-//		driverButtonY.whenPressed(new PutBoolean("driverButtonY", true));
-//		driverButtonY.whenReleased(new PutBoolean("driverButtonY", false));
-		
-		
-		driverButtonA.whenPressed(new PutDouble("x", 20.5));
-		driverButtonA.whenReleased(new PutDouble("x", 0.0));
-		
-		driverButtonB.whenPressed(new PutDouble("y", 30.5));
-		driverButtonB.whenReleased(new PutDouble("y", 0.0));
-
-		driverButtonX.whenPressed(new PutDouble("z", 40.5));
-		driverButtonX.whenReleased(new PutDouble("z", 0.0));
+		driverButtonA.whenPressed(new DriveToggleAutoShift());
+		driverButtonB.whenPressed(new DriveShift());
 	}
 	
-	
-	public double getDriverRightVerticalAxis() {
-		return driverController.getRawAxis(RIGHT_VERT_AXIS);
+	public double getDriverRightY() {
+		return applyDeadZone(-driverController.getRawAxis(RIGHT_VERT_AXIS));
 	}
 	
-	public double getDriverLeftVerticalAxis() {
-		return driverController.getRawAxis(LEFT_VERT_AXIS);
+	public double getDriverRightX() {
+		return applyDeadZone(driverController.getRawAxis(RIGHT_HORIZ_AXIS));
+	}
+	
+	public double getDriverLeftY() {
+		return applyDeadZone(-driverController.getRawAxis(LEFT_VERT_AXIS));
 	}
 
+	public double getDriverLeftX() {
+		return applyDeadZone(driverController.getRawAxis(LEFT_HORIZ_AXIS));
+	}
 
-
-	public double applyDeadZone(double value) {
+	private double applyDeadZone(double value) {
 		if (Math.abs(value) < DEADZONE) {
 			return 0.0;
 		} else if (value > 0) {

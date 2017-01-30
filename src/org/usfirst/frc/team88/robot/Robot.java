@@ -5,8 +5,10 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import org.usfirst.frc.team88.robot.subsystems.Drive;
-import org.usfirst.frc.team88.robot.subsystems.OINetTable;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
+
+import org.usfirst.frc.team88.robot.commands.*;
+import org.usfirst.frc.team88.robot.subsystems.*;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,8 +22,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 
-	public static final Drive drive = new Drive();
-	public static OINetTable oiNetTable;
+	public static Drive drive;
+	public static NetworkTable jetsonTable;
 	public static OI oi;
 
     Command autonomousCommand;
@@ -32,10 +34,41 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-    	oiNetTable = new OINetTable();
+		jetsonTable = NetworkTable.getTable("imfeelinglucky");
+
+    	drive = new Drive();
+    	
 		oi = new OI();
         chooser = new SendableChooser();
+
+        SmartDashboard.putData(Scheduler.getInstance());
+        SmartDashboard.putData(drive);
+        
         SmartDashboard.putData("Auto mode", chooser);
+        
+		SmartDashboard.putData("Rotate to 0", new DriveRotateToAngle(0.0));
+		SmartDashboard.putData("Rotate to 90", new DriveRotateToAngle(90.0));
+		SmartDashboard.putData("Rotate to 180", new DriveRotateToAngle(180.0));
+		SmartDashboard.putData("Rotate to -90", new DriveRotateToAngle(-90.0));
+
+		SmartDashboard.putData("Rotate to Target", new DriveRotateToTarget());
+		SmartDashboard.putData("Follow Target", new DriveFollowTarget());
+		
+		SmartDashboard.putData("Toggle Autoshift", new DriveToggleAutoShift());
+		SmartDashboard.putData("Manual Shift", new DriveShift());
+		
+		SmartDashboard.putData("Drive Distance", new DriveDistance(7.5));
+		SmartDashboard.putData("Drive Distance Reverese", new DriveDistanceReverse(-7.5));
+		SmartDashboard.putData("Hallway Auto", new AutoHallway());
+		
+		SmartDashboard.putData("Turn Left 90", new DriveTurnLeft90());
+		SmartDashboard.putData("Turn Right 90", new DriveTurnRight90());
+		SmartDashboard.putData("40 Ball Auto", new Auto40Ball());
+		SmartDashboard.putData("Drive Distance Arc", new DriveDistanceArc(3.8));
+		
+		SmartDashboard.putData("Drive Field Orientated", new DriveFieldOrientated());
+		SmartDashboard.putData("Zero Yaw", new DriveZeroYaw());
+		
     }
 	
 	/**
